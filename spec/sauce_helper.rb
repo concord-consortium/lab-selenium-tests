@@ -4,10 +4,15 @@ require 'sauce'
 require 'sauce/capybara'
 
 Capybara.default_driver = :sauce
+Capybara.app_host = 'http://lab.dev.concord.org/'
+Capybara.run_server = false
 
 # Set up configuration
 Sauce.config do |c|
   c[:browsers] = [
-    ['Linux', 'Chrome', nil]
+    ['Linux', 'Chrome', '33']
+    #["Windows 8", "Internet Explorer", "10"]
   ]
+  #c[:record_video] = false
+  #c[:record_screenshots] = false
 end
