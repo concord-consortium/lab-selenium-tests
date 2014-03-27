@@ -13,6 +13,7 @@ Sauce.config do |c|
     ['Linux', 'Chrome', '33']
     #["Windows 8", "Internet Explorer", "10"]
   ]
+  c[:max_duration] = 6000
   #c[:record_video] = false
   #c[:record_screenshots] = false
 end

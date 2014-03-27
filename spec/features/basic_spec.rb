@@ -2,13 +2,13 @@ require 'spec_helper'
 require 'json'
 require 'net/http'
 require 'uri'
+require 'test_helper'
 
 describe 'All public curricular Lab interactives', :sauce => true do
 
   LAB_URL = 'http://lab.dev.concord.org/'
   interactives_to_test = []
-  screenshot_paths = []
-  test_dir = "screenshots/test_#{Time.now.to_i}"
+  test_helper = nil
 
   before(:all) do
     # Download interactives.json and populate interactives_to_test array.
@@ -37,19 +37,7 @@ describe 'All public curricular Lab interactives', :sauce => true do
       puts LAB_URL + 'interactives.json cannot be found!'
     end
 
-    # Prepare screenshots/test_<timestamp> folder.
-    `mkdir -p #{test_dir}`
-  end
-
-  after(:all) do
-    screenshots_idx_f = File.new "#{test_dir}/index.js", 'w'
-    screenshots_idx_f.puts 'var SCREENSHOTS_LIST = ['
-    screenshot_paths.each_index do |i|
-      screenshots_idx_f.write "  '#{screenshot_paths[i]}'"
-      screenshots_idx_f.puts i < screenshot_paths.length - 1 ? ',' : '' 
-    end
-    screenshots_idx_f.puts '];'
-    screenshots_idx_f.close
+    test_helper = TestHelper.new    
   end
 
   # Define actual tests.
@@ -65,16 +53,17 @@ describe 'All public curricular Lab interactives', :sauce => true do
     end
     
     interactives_to_test.each do |int_path|
+      int_url = LAB_URL + 'embeddable-dev.html#' + int_path
       id_string = int_path + ' ' + os_browser
       puts '#' + idx.to_s + ' ' + id_string
       idx += 1
-      visit LAB_URL + 'embeddable-dev.html#' + int_path
+      visit int_url
       # First, disable help tips if they are active, as they will block playback controller.
-      if page.has_css?('.interactive-rendered') and page.has_css?('.lab-help-overlay')
+      if page.has_css?('.lab-help-overlay')
         find('#help-icon').click
       end
       # Now try to start the simulation if the play button is available.
-      if page.has_css?('.interactive-rendered') and page.has_css?('.play-pause')
+      if page.has_css?('.play-pause')
         play_btn = find('.play-pause')
         if play_btn.visible?
           start_time = page.evaluate_script 'script.get("time");'
@@ -91,9 +80,7 @@ describe 'All public curricular Lab interactives', :sauce => true do
         end
       end
       # Save screenshot.
-      screenshot_path = "#{test_dir}/#{id_string.gsub(/[\/\s]/, '_')}.png"
-      page.save_screenshot(screenshot_path)
-      screenshot_paths << screenshot_path
+      test_helper.save_screenshot page, "#{id_string.gsub(/[\/\s]/, '_')}.png", int_url
     end
   end
 end
