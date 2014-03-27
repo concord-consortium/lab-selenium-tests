@@ -1,4 +1,4 @@
-require 'rmagick'
+require 'RMagick'
 
 class TestHelper
   @@main_dir = 'screenshots'
