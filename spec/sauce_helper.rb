@@ -10,10 +10,12 @@ Capybara.run_server = false
 # Set up configuration
 Sauce.config do |c|
   c[:browsers] = [
-    ['Linux', 'Chrome', '33']
-    #["Windows 8", "Internet Explorer", "10"]
+    ['Linux', 'Chrome', '33'],
+    ['Windows 8', 'Internet Explorer', '10'],
+    ['OS X 10.8', 'Safari', '6']
   ]
-  c[:max_duration] = 6000
+  c[:max_duration] = 10800
+  c[:device_orientation] = 'landscape'
   #c[:record_video] = false
   #c[:record_screenshots] = false
 end
