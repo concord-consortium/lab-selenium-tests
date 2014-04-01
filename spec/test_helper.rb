@@ -12,9 +12,9 @@ class TestHelper
     `cp #{@@main_dir}/results_template.html #{@test_dir}/index.html`
   end
 
-  def save_screenshot(page, filename, interactive_url)
+  def save_screenshot(selenium, filename, interactive_url)
     screenshot_path = "#{@test_dir}/#{filename}"
-    page.save_screenshot(screenshot_path)
+    selenium.save_screenshot(screenshot_path)
 
     new_image = {
       :filename => filename,

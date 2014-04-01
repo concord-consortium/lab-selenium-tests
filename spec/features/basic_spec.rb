@@ -1,3 +1,4 @@
+require 'selenium-webdriver'
 require 'spec_helper'
 require 'json'
 require 'net/http'
@@ -37,50 +38,30 @@ describe 'All public curricular Lab interactives', :sauce => true do
       puts LAB_URL + 'interactives.json cannot be found!'
     end
 
-    test_helper = TestHelper.new    
+    test_helper = TestHelper.new
   end
 
   # Define actual tests.
-  it 'should work without any errors for 0.5s' do
+  it 'should load correctly' do
+    os_browser = '[' + selenium.config[:os] + ' ' + selenium.config[:browser]
+    os_browser += ' ' + selenium.config[:browser_version] if selenium.config[:browser] == 'Internet Explorer'
+    os_browser += ']'
+
     idx = 0
-    if defined? selenium
-      # selenium object is defined only when tests are ran on SauceLabs.
-      os_browser = '[' + selenium.config[:os] + ' ' + selenium.config[:browser]
-      os_browser += ' ' + selenium.config[:browser_version] if selenium.config[:browser] == 'Internet Explorer'
-      os_browser += ']'
-    else
-      os_browser = '[local test]'
-    end
-    
     interactives_to_test.each do |int_path|
       int_url = LAB_URL + 'embeddable-dev.html#' + int_path
       id_string = int_path + ' ' + os_browser
       puts '#' + idx.to_s + ' ' + id_string
       idx += 1
-      visit int_url
-      # First, disable help tips if they are active, as they will block playback controller.
-      if page.has_css?('.lab-help-overlay')
-        find('#help-icon').click
+      selenium.navigate.to int_url
+      wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
+      begin
+        wait.until { selenium.find_element(:class => 'interactive-rendered') }
+      rescue Selenium::WebDriver::Error::TimeOutError
+        # .interactive-rendered class was added in the recent Lab version.
+      ensure
+        test_helper.save_screenshot selenium, "#{id_string.gsub(/[\/\s]/, '_')}.png", int_url
       end
-      # Now try to start the simulation if the play button is available.
-      if page.has_css?('.play-pause')
-        play_btn = find('.play-pause')
-        if play_btn.visible?
-          start_time = page.evaluate_script 'script.get("time");'
-          play_btn.click
-          sleep 0.5
-          play_btn.click
-          end_time = page.evaluate_script 'script.get("time");'
-          # Additional check assuming that model has property 'time'.
-          expect(end_time).to be > start_time if start_time != nil
-          # Restore model to initial state.
-          page.execute_script 'script.reloadModel()'
-          # Ensure that play button doesn't have hover state or tooltip anymore.
-          find('#interactive-container').click
-        end
-      end
-      # Save screenshot.
-      test_helper.save_screenshot page, "#{id_string.gsub(/[\/\s]/, '_')}.png", int_url
     end
   end
 end
