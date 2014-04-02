@@ -30,7 +30,7 @@ SeleniumHelper::execute_on browser, cloud, "Test of public, curricular Lab inter
       # Ignore timeout in case we use the same test to get screenshots of old Lab releases.
     ensure
       sleep 1
-      test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{browser}].png", int_url
+      test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{browser}_#{cloud}].png", int_url
     end
   end
 end

@@ -30,7 +30,7 @@ module SeleniumHelper
         caps.platform = 'OS X 10.8'
       when SUPPORTED_BROWSERS[2]
         caps = Selenium::WebDriver::Remote::Capabilities.firefox
-        caps.version = '27'
+        caps.version = '28'
         caps.platform = 'Windows 7'
       when SUPPORTED_BROWSERS[3]
         caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
