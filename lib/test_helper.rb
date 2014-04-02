@@ -4,17 +4,17 @@ class TestHelper
   @@main_dir = 'screenshots'
   @@expected_screenshots_dir = "#{@@main_dir}/expected_screenshots"
 
-  def initialize
-    @test_dir = "#{@@main_dir}/#{ENV['TEST_DIR']}"
+  def initialize(test_name)
+    @test_dir = "#{@@main_dir}/test_#{test_name || Time.now.to_i}"
     @images_metadata = []
     # Prepare screenshots/test_<timestamp> folder.
     `mkdir -p #{@test_dir}`
     `cp #{@@main_dir}/results_template.html #{@test_dir}/index.html`
   end
 
-  def save_screenshot(selenium, filename, interactive_url)
+  def save_screenshot(driver, filename, interactive_url)
     screenshot_path = "#{@test_dir}/#{filename}"
-    selenium.save_screenshot(screenshot_path)
+    driver.save_screenshot screenshot_path
 
     new_image = {
       :filename => filename,
