@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,6 +9,13 @@
         margin: 0;
         padding: 0;
       }
+      #config {
+        margin: 10px;
+      }
+      #threshold {
+        font-size: 20px;
+        width: 70px;
+      }
       .result {
         padding: 10px 0;
       }
@@ -20,6 +26,9 @@
         width: 42%;
         display: inline-block;
         vertical-align: middle;
+      }
+      .hidden img {
+        display: none;
       }
       img.left {
         margin-right: 10px;
@@ -45,10 +54,11 @@
         display: inline-block; 
         vertical-align: middle;
         text-align: right;
-        margin-right: 10px;
+        margin: 0 10px 0 0;
       }
-      hr {
-        width: 100%;
+      .hidden p.diff {
+        font-size: 30px;
+        margin: -10px 10px 0 0;
       }
       a {
         margin: 0;
@@ -65,7 +75,9 @@
     </style>
   </head>
   <body>
-
+  <div id="config">
+    <p>Show screenshot when the difference is greater or equal than <input type="text" id="threshold" value="0.01"></input>%.</p>
+  </div>
   <div id="container">
   </div>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
@@ -86,9 +98,10 @@
         img = IMAGES_METADATA[i];
         imgDiff = img.diff != null ? img.diff.toFixed(2) : 100;
         $result = $('<div class="result">').appendTo($container);
+        $result.data('diff', imgDiff);
         $resultInner = $('<div class="result-inner">').appendTo($result);
         $result.css('background', greenToRed(imgDiff));
-        $resultInner.append('<a href="' + img.interactiveUrl + '">' + img.interactiveUrl.split("#")[1] + '</a>');
+        $resultInner.append('<a href="' + img.interactiveUrl + '" target="_blank">' + img.interactiveUrl.split("#")[1] + '</a>');
         $resultInner.append('<p class="diff">' + (imgDiff + "%") + '</p>');
         $actualImg = $('<img src="' + img.filename + '" class="left">').appendTo($resultInner);
         $('<img src="../expected_screenshots/' + img.filename + '" class="right">')
@@ -97,6 +110,23 @@
           })
           .appendTo($resultInner);
       }
+      // Threshold handler.
+      function hideImgBelowThreshold() {
+        var threshold = Number($('#threshold').val());
+        if (isNaN(threshold)) return;
+        $('.result').removeClass('hidden');
+        $('.result').filter(function (index) {
+          return IMAGES_METADATA[index].diff < threshold;
+        }).addClass('hidden');
+      }
+      hideImgBelowThreshold();
+      var lastTimeout = null;
+      $('#threshold').on('keyup', function() {
+        if (lastTimeout) clearTimeout(lastTimeout);
+        lastTimeout = setTimeout(function (){
+            hideImgBelowThreshold();
+        }, 300);
+      });
     });
   </script>
 
