@@ -3,10 +3,10 @@ require 'net/http'
 require 'uri'
 
 module LabHelper
-  LAB_URL = 'http://lab.dev.concord.org/'
+  LAB_URL = 'http://lab.concord.org/'
 
   def self.interactive_url(int_path)
-    LAB_URL + 'embeddable-dev.html#' + int_path
+    LAB_URL + 'embeddable.html#' + int_path
   end
 
   def self.public_curricular_interactives

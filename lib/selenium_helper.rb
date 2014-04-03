@@ -9,12 +9,19 @@ module SeleniumHelper
   def self.execute_on(browser='Chrome', cloud='SauceLabs', name='Test')
     url = cloud == 'SauceLabs' ? SAUCELABS_URL : BROWSERSTACK_URL;
     caps = get_capabilities browser, cloud
-    caps[:name] = name
+    caps['name'] = name
+    caps['max-duration'] = 10800
     driver = Selenium::WebDriver.for(:remote, :url => url, :desired_capabilities => caps)
-
-    yield driver
-
-    driver.quit
+    puts "[webdriver] created"
+    #driver.manage.timeouts.implicit_wait = 60
+    #driver.manage.timeouts.script_timeout = 300
+    #driver.manage.timeouts.page_load = 300
+    begin
+      yield driver
+    ensure
+      puts "[webdriver] quit"
+      driver.quit
+    end
   end
 
   def self.get_capabilities(browser='Chrome', cloud='SauceLabs')
@@ -26,8 +33,8 @@ module SeleniumHelper
         caps.platform = 'Linux'
       when SUPPORTED_BROWSERS[1]
         caps = Selenium::WebDriver::Remote::Capabilities.safari
-        caps.version = '6'
-        caps.platform = 'OS X 10.8'
+        caps.version = '7'
+        caps.platform = 'OS X 10.9'
       when SUPPORTED_BROWSERS[2]
         caps = Selenium::WebDriver::Remote::Capabilities.firefox
         caps.version = '28'

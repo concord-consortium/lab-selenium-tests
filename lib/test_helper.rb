@@ -12,9 +12,19 @@ class TestHelper
     `cp #{@@main_dir}/results_template.html #{@test_dir}/index.html`
   end
 
-  def save_screenshot(driver, filename, interactive_url)
+  def save_screenshot(driver, filename, interactive_url, browser)
     screenshot_path = "#{@test_dir}/#{filename}"
     driver.save_screenshot screenshot_path
+
+    if browser == 'iPad'
+      img = Magick::Image::read(screenshot_path).first
+      # iPad screenshots are rotated...
+      img.rotate!(-90)
+      # They also contain top bar with clock, URL etc. We don't need it,
+      # it would only obfuscate the image comparison algorithm results.
+      img.crop!(0, 190, img.columns, img.rows - 190)
+      img.write(screenshot_path)
+    end
 
     new_image = {
       :filename => filename,
@@ -49,6 +59,10 @@ class TestHelper
     return nil if !File.exist?(path_a) or !File.exist?(path_b)
     a = Magick::Image::read(path_a).first  
     b = Magick::Image::read(path_b).first 
+    a.resize!(b.columns, b.rows) if a.columns != b.columns or a.rows != b.rows
     a.compare_channel(b, Magick::RootMeanSquaredErrorMetric)[1] * 100
   end
+
+  private
+  
 end
