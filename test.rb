@@ -57,7 +57,7 @@ opt[:test_name] = "#{opt[:lab_env]}_#{opt[:browser]}_#{opt[:cloud]}_#{Time.now.t
 opt[:interactives_to_test] = LabHelper::public_curricular_interactives(opt[:lab_env]) if !opt[:interactives_to_test]
 
 # Actual test.
-test_helper = TestHelper.new opt[:test_name]
+test_helper = TestHelper.new opt[:test_name], opt[:interactives_to_test].length
 attempt = 0
 begin
   SeleniumHelper::execute_on opt[:browser], opt[:cloud], "Lab interactives screenshots generation" do |driver|

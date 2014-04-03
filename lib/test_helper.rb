@@ -2,14 +2,19 @@ require 'RMagick'
 
 class TestHelper
   @@main_dir = 'screenshots'
+  @@tests_metadata = "#{@@main_dir}/metadata.js"
   @@expected_screenshots_dir = "#{@@main_dir}/expected_screenshots"
 
-  def initialize(test_name)
-    @test_dir = "#{@@main_dir}/test_#{test_name || Time.now.to_i}"
-    @images_metadata = []
+  def initialize(test_name, expected_screenshots_count)
+    @test_name = "test_#{test_name || Time.now.to_i}"
+    @test_dir = "#{@@main_dir}/#{@test_name}"
+    @expected_screenshots_count = expected_screenshots_count
+    @test_date = Time.now
+    @images_diff = []
     # Prepare screenshots/test_<timestamp> folder.
     `mkdir -p #{@test_dir}`
     `cp #{@@main_dir}/results_template.html #{@test_dir}/index.html`
+    update_tests_metadata
   end
 
   def save_screenshot(driver, filename, interactive_url, browser)
@@ -31,24 +36,60 @@ class TestHelper
       :diff     => compare_images(screenshot_path, screenshot_path.gsub(@test_dir, @@expected_screenshots_dir)),
       :interactiveUrl => interactive_url
     }
+    @images_diff << new_image[:diff]
     add_js_image_metadata new_image
+    update_tests_metadata
   end
 
   private 
 
-  def add_js_image_metadata new_image
-    File.open("#{@test_dir}/images_metadata.js", File::RDWR|File::CREAT, 0644) do |f|
+  def update_tests_metadata
+    new_test_metadata = {
+      :testName => @test_name,
+      :date => @test_date,
+      :expectedScreenshotsCount => @expected_screenshots_count,
+      :savedScreenshotsCount => @images_diff.length,
+      :rootMeanSquaredError => root_mean_squared_error(@images_diff)
+    }
+
+    open_and_lock_file "#{@@tests_metadata}" do |f|
+      content = f.read
+      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      # Find old metadata, replace with new one and save file.
+      index = array.index { |m| m['testName'] == @test_name }
+      if index
+        array[index] = new_test_metadata
+      else 
+        array << new_test_metadata
+      end
+      f.rewind
+      f.puts 'var TESTS_METADATA ='
+      f.puts JSON.pretty_generate(array)
+      f.puts ';'
+      f.flush
+      f.truncate f.pos
+    end
+  end
+
+  def add_js_image_metadata(new_image)
+    open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
+      content = f.read
+      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      array.push new_image
+      f.rewind
+      f.puts 'var IMAGES_METADATA ='
+      f.puts JSON.pretty_generate(array)
+      f.puts ';'
+      f.flush
+      f.truncate f.pos
+    end
+  end
+
+  def open_and_lock_file(file)
+    File.open(file, File::RDWR|File::CREAT, 0644) do |f|
       begin
         f.flock File::LOCK_EX
-        content = f.read
-        array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
-        array.push new_image
-        f.rewind
-        f.puts 'var IMAGES_METADATA ='
-        f.puts JSON.pretty_generate(array)
-        f.puts ';'
-        f.flush
-        f.truncate f.pos
+        yield f
       ensure
         f.flock File::LOCK_UN
       end
@@ -63,6 +104,9 @@ class TestHelper
     a.compare_channel(b, Magick::RootMeanSquaredErrorMetric)[1] * 100
   end
 
-  private
-
+  def root_mean_squared_error(array)
+    return 0 if array.length == 0
+    sq_sum = array.reduce { |sum, n| sum += n * n }
+    return Math::sqrt(sq_sum / array.length)
+  end
 end

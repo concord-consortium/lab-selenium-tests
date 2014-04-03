@@ -98,7 +98,6 @@
         img = IMAGES_METADATA[i];
         imgDiff = img.diff != null ? img.diff.toFixed(2) : 100;
         $result = $('<div class="result">').appendTo($container);
-        $result.data('diff', imgDiff);
         $resultInner = $('<div class="result-inner">').appendTo($result);
         $result.css('background', greenToRed(imgDiff));
         $resultInner.append('<a href="' + img.interactiveUrl + '" target="_blank">' + img.interactiveUrl.split("#")[1] + '</a>');
