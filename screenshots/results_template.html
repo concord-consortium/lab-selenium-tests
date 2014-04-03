@@ -116,7 +116,8 @@
         if (isNaN(threshold)) return;
         $('.result').removeClass('hidden');
         $('.result').filter(function (index) {
-          return IMAGES_METADATA[index].diff < threshold;
+          var diff = IMAGES_METADATA[index].diff;
+          return diff != null && diff < threshold;
         }).addClass('hidden');
       }
       hideImgBelowThreshold();
