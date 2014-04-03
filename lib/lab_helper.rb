@@ -3,17 +3,26 @@ require 'net/http'
 require 'uri'
 
 module LabHelper
-  LAB_URL = 'http://lab.concord.org/'
+  LAB_URL = {
+    :production => 'http://lab.concord.org/',
+    :staging    => 'http://lab-staging.concord.org/',
+    :dev        => 'http://lab.dev.concord.org/'
+  }
+  EMBEDDABLE_PAGE = {
+    :production => 'embeddable.html',
+    :staging    => 'embeddable-staging.html',
+    :dev        => 'embeddable-dev.html' 
+  }
 
-  def self.interactive_url(int_path)
-    LAB_URL + 'embeddable.html#' + int_path
+  def self.interactive_url(int_path, env)
+    LAB_URL[env] + EMBEDDABLE_PAGE[env] +'#' + int_path
   end
 
-  def self.public_curricular_interactives
+  def self.public_curricular_interactives(env)
     # Download interactives.json and return array of public, curricular interactives paths.
     interactives = []
 
-    uri = URI.parse(LAB_URL + 'interactives.json')
+    uri = URI.parse(LAB_URL[env] + 'interactives.json')
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Get.new(uri.request_uri)
 
@@ -35,7 +44,7 @@ module LabHelper
         end
       end
     else
-      puts LAB_URL + 'interactives.json cannot be found!'
+      puts LAB_URL[env] + 'interactives.json cannot be found!'
     end
     return interactives
   end

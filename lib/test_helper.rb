@@ -16,7 +16,7 @@ class TestHelper
     screenshot_path = "#{@test_dir}/#{filename}"
     driver.save_screenshot screenshot_path
 
-    if browser == 'iPad'
+    if browser == :iPad
       img = Magick::Image::read(screenshot_path).first
       # iPad screenshots are rotated...
       img.rotate!(-90)
@@ -64,5 +64,5 @@ class TestHelper
   end
 
   private
-  
+
 end

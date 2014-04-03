@@ -4,28 +4,28 @@ require 'selenium-webdriver'
 module SeleniumHelper
   SAUCELABS_URL = "http://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:80/wd/hub"
   BROWSERSTACK_URL = "http://PiotrJanik:F7suzt0xQmJe6fZIqn2r@hub.browserstack.com/wd/hub"
-  SUPPORTED_BROWSERS = ['Chrome', 'Safari', 'Firefox', 'IE9', 'IE10', 'iPad']
+  SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :iPad]
 
-  def self.execute_on(browser='Chrome', cloud='SauceLabs', name='Test')
-    url = cloud == 'SauceLabs' ? SAUCELABS_URL : BROWSERSTACK_URL;
+  def self.execute_on(browser, cloud, name)
+    url = cloud == :SauceLabs ? SAUCELABS_URL : BROWSERSTACK_URL;
     caps = get_capabilities browser, cloud
     caps['name'] = name
     caps['max-duration'] = 10800
     driver = Selenium::WebDriver.for(:remote, :url => url, :desired_capabilities => caps)
-    puts "[webdriver] created"
+    puts '[webdriver] created'
     #driver.manage.timeouts.implicit_wait = 60
     #driver.manage.timeouts.script_timeout = 300
     #driver.manage.timeouts.page_load = 300
     begin
       yield driver
     ensure
-      puts "[webdriver] quit"
+      puts '[webdriver] quit'
       driver.quit
     end
   end
 
-  def self.get_capabilities(browser='Chrome', cloud='SauceLabs')
-    if cloud == 'SauceLabs' # SauceLabs
+  def self.get_capabilities(browser, cloud)
+    if cloud == :SauceLabs
       case browser
       when SUPPORTED_BROWSERS[0]
         caps = Selenium::WebDriver::Remote::Capabilities.chrome
@@ -55,7 +55,7 @@ module SeleniumHelper
       else
         raise 'Incorrect browser name.'
       end
-    else # BrowserStack
+    elsif cloud == :BrowserStack
       caps = Selenium::WebDriver::Remote::Capabilities.new
       case browser
       when SUPPORTED_BROWSERS[0]
@@ -84,11 +84,13 @@ module SeleniumHelper
         caps['os'] = 'WINDOWS'
         caps['os_version'] = '8'
       when SUPPORTED_BROWSERS[5]
-        caps["device"] = "iPad 3rd (7.0)"
-        caps["deviceOrientation"] = "landscape"
+        caps['device'] = 'iPad 3rd (7.0)'
+        caps['deviceOrientation'] = 'landscape'
       else
         raise 'Incorrect browser name.'
       end
+    else 
+      raise 'Incorrect cloud name (SauceLabs or BrowserStack expected).'
     end
     return caps
   end
