@@ -45,6 +45,11 @@
   <script src="metadata.js"></script>
   <script>
     $(function () {      
+      function getLinkCallback(url) {
+        return function() {
+          window.open(url, '_blank');
+        }
+      }
       var testsCount = TESTS_METADATA.length;
       var $container = $('#container');
       var greenToRed = d3.scale.linear().range(['#179659', '#961717']).domain([0, 15]).clamp(true);
@@ -53,9 +58,7 @@
       for (var i = 0; i < testsCount; i++) {
         test = TESTS_METADATA[i];
         $test = $('<tr class="test">').appendTo($container);
-        $test.on('click', function () {
-          window.open(test.testName + '/index.html', '_blank');
-        });
+        $test.on('click', getLinkCallback(test.testName + '/index.html'));
         $test.css('background', greenToRed(test.rootMeanSquaredError));
         $test.append('<td class="idx">#' + (i + 1) + '</td>');
         $test.append('<td class="date">' + test.date + '</td>');
