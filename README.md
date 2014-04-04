@@ -3,8 +3,16 @@ lab-selenium-tests
 
 Selenium tests of Lab Framework and Lab Interactives Site
 
+Results:
+http://lab4.dev.concord.org/selenium/
+
 Usage
 ====
+
+Clone repository locally or `ssh deploy@lab4.dev.concord.org` and then `cd /var/www/lab-selenium-tests`.
+
+### test.rb
+
 `test.rb` lets you start screenshot generation on desired platform.
 
 `test.rb -h` shows description and available options:
@@ -32,3 +40,9 @@ Examples:
 `./test.rb -b Safari -l production` starts Safari tests using production release of Lab.
 
 Results are always saved to `screenshots/test_<test_name>` folder. Also `screenshots/index.html` page should present new entry.
+
+### rm-old-tests.rb
+
+`rm-old-tests.rb` lets you remove old tests.
+
+`rm-old-tests.rb COUNT` removes first COUNT tests results (`screenshots/test_<test_name>`) and updates `screenshots/index.html` page.
