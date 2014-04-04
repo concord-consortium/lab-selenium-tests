@@ -1,5 +1,5 @@
 require 'RMagick'
-require 'JSON'
+require 'json'
 
 class TestHelper
   @@main_dir = 'screenshots'
