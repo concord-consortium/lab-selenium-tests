@@ -19,6 +19,9 @@
       .result {
         padding: 10px 0;
       }
+      .result.hidden {
+        height: 22px;
+      }
       .result-inner {
         margin: 0 auto;
       }
@@ -57,17 +60,20 @@
         margin: 0 10px 0 0;
       }
       .hidden p.diff {
-        font-size: 30px;
-        margin: -10px 10px 0 0;
+        font-size: 20px;
+        margin: -40px 0 0 0;
+      }
+      p.link {
+        text-align: center;
+        font-size: 22px;
+        margin: 0 0 5px 0;
+      }
+      .hidden p.link {
+        font-size: 15px;
       }
       a {
-        margin: 0;
-        padding: 10px 0;
         text-decoration: none;
-        display: block;
-        font-size: 22px;
         color: #fff;
-        text-align: center;
       }
       a:hover {
         color: #bbb;
@@ -100,7 +106,7 @@
         $result = $('<div class="result">').appendTo($container);
         $resultInner = $('<div class="result-inner">').appendTo($result);
         $result.css('background', greenToRed(imgDiff));
-        $resultInner.append('<a href="' + img.interactiveUrl + '" target="_blank">' + img.interactiveUrl.split("#")[1] + '</a>');
+        $resultInner.append('<p class="link"><a href="' + img.interactiveUrl + '" target="_blank">' + img.interactiveUrl.split("#")[1] + '</a></p>');
         $resultInner.append('<p class="diff">' + (imgDiff + "%") + '</p>');
         $actualImg = $('<img src="' + img.filename + '" class="left">').appendTo($resultInner);
         $('<img src="../expected_screenshots/' + img.filename + '" class="right">')
