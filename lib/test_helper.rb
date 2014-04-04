@@ -1,4 +1,5 @@
 require 'RMagick'
+require 'JSON'
 
 class TestHelper
   @@main_dir = 'screenshots'
@@ -41,6 +42,38 @@ class TestHelper
     update_tests_metadata
   end
 
+  def self.remove_tests(count)
+    tests_to_remove = nil
+    open_and_lock_file "#{@@tests_metadata}" do |f|
+      content = f.read
+      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      tests_to_remove = array[0...count]
+      array = array.drop count
+      f.rewind
+      f.puts 'var TESTS_METADATA ='
+      f.puts JSON.pretty_generate(array)
+      f.puts ';'
+      f.flush
+      f.truncate f.pos
+    end
+    tests_to_remove.each do |test|
+      path = "#{@@main_dir}/#{test['testName']}"
+      puts "Removing #{path}..."
+      `rm -rf #{path}`
+    end
+  end
+
+  def self.open_and_lock_file(file)
+    File.open(file, File::RDWR|File::CREAT, 0644) do |f|
+      begin
+        f.flock File::LOCK_EX
+        yield f
+      ensure
+        f.flock File::LOCK_UN
+      end
+    end
+  end
+
   private 
 
   def update_tests_metadata
@@ -52,7 +85,7 @@ class TestHelper
       :rootMeanSquaredError => root_mean_squared_error(@images_diff)
     }
 
-    open_and_lock_file "#{@@tests_metadata}" do |f|
+    TestHelper.open_and_lock_file "#{@@tests_metadata}" do |f|
       content = f.read
       array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
       # Find old metadata, replace with new one and save file.
@@ -72,7 +105,7 @@ class TestHelper
   end
 
   def add_js_image_metadata(new_image)
-    open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
+    TestHelper.open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
       content = f.read
       array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
       array.push new_image
@@ -82,17 +115,6 @@ class TestHelper
       f.puts ';'
       f.flush
       f.truncate f.pos
-    end
-  end
-
-  def open_and_lock_file(file)
-    File.open(file, File::RDWR|File::CREAT, 0644) do |f|
-      begin
-        f.flock File::LOCK_EX
-        yield f
-      ensure
-        f.flock File::LOCK_UN
-      end
     end
   end
 
