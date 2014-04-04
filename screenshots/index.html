@@ -5,37 +5,41 @@
     <title>Lab Interactives tests</title>
     <style>
       body {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Helvetica, Arial, sans-serif;
         margin: 0;
         padding: 0;
-      }
-      .test {
-        padding: 10px 0;
-      }
-      a {
-        text-decoration: none;
+        width: 100%;
         color: #fff;
       }
-      a:hover {
-        color: #bbb;
+      #container {
+        width: 100%;
+        border-spacing: 0;
       }
-      p {
-        margin: 0 0 0 25px;
-        color: #fff;
+      td {
+        padding: 5px 0 5px 35px;
+        white-space: nowrap;
         font-size: 14px;
+        font-weight: lighter;
       }
-      .name, .progress, .error {
-        font-size: 22px;
+      td:last-child {
+          width: 100%
       }
-      .date {
-        font-size: 16px;
-        margin: 0 0 10px 15px;
+      tr:hover, tr:hover span {
+        color: #F6FFDD;
+        cursor: pointer;
+      }
+      .date, .name {
+        font-size: 18px;
+      }
+      .idx, .progress, .error {
+        font-size: 18px;
+        padding-left: 10px;
       }
     </style>
   </head>
   <body>
-  <div id="container">
-  </div>
+  <table id="container">
+  </table>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="metadata.js"></script>
@@ -48,14 +52,17 @@
       var test;
       for (var i = 0; i < testsCount; i++) {
         test = TESTS_METADATA[i];
-        $test = $('<div class="test">').appendTo($container);
+        $test = $('<tr class="test">').appendTo($container);
+        $test.on('click', function () {
+          window.open(test.testName + '/index.html', '_blank');
+        });
         $test.css('background', greenToRed(test.rootMeanSquaredError));
-        $test.append('<p class="date">' + test.date + '</p>');
-        $test.append('<p class="name"><a href="' + test.testName + '/index.html' + '" target="_blank">' + 
-                          test.testName + '</a></p>');
-        $test.append('<p>test progress:<span class="progress"> ' + 
-                          test.savedScreenshotsCount + '/' + test.expectedScreenshotsCount + '</span></p>');
-        $test.append('<p>error:<span class="error"> ' + (test.rootMeanSquaredError.toFixed(2) + "%") + '</span></p>');
+        $test.append('<td class="idx">#' + (i + 1) + '</td>');
+        $test.append('<td class="date">' + test.date + '</td>');
+        $test.append('<td class="name">' + test.testName + '</td>');
+        $test.append('<td>progress:</td><td class="progress">' + 
+                     test.savedScreenshotsCount + '/' + test.expectedScreenshotsCount + '</td>');
+        $test.append('<td>error:</td><td class="error">' + (test.rootMeanSquaredError.toFixed(2) + "%") + '</td>');
       }
     });
   </script>
