@@ -8,14 +8,9 @@ module LabHelper
     :staging    => 'http://lab-staging.concord.org/',
     :dev        => 'http://lab.dev.concord.org/'
   }
-  EMBEDDABLE_PAGE = {
-    :production => 'embeddable.html',
-    :staging    => 'embeddable-staging.html',
-    :dev        => 'embeddable-dev.html' 
-  }
 
   def self.interactive_url(int_path, env)
-    LAB_URL[env] + EMBEDDABLE_PAGE[env] +'#' + int_path
+    LAB_URL[env] + 'embeddable.html#' + int_path
   end
 
   def self.public_curricular_interactives(env)
