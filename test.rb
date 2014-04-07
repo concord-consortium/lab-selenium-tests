@@ -84,7 +84,7 @@ begin
         # Extra time for iframe model type.
         driver.find_element(:id => 'iframe-model')
         puts 'iframe model detected, extra sleep time added...'
-        sleep 10
+        sleep 15
       rescue Selenium::WebDriver::Error::NoSuchElementError
         # It's present only in JSmol interactives.
       end
