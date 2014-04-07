@@ -61,6 +61,8 @@ test_helper = TestHelper.new opt[:test_name], opt[:interactives_to_test].length
 attempt = 0
 begin
   SeleniumHelper::execute_on opt[:browser], opt[:cloud], "Lab interactives screenshots generation" do |driver|
+    # Implicit wait e.g. while calling find_element method.
+    driver.manage.timeouts.implicit_wait = 0 # seconds
     while opt[:interactives_to_test].length > 0
       int_path = opt[:interactives_to_test][0]
       puts int_path
@@ -72,10 +74,22 @@ begin
       rescue Selenium::WebDriver::Error::TimeOutError
         # 'interactive-rendered' class was added in the recent Lab version. 
         # Ignore timeout in case we use the same test to get screenshots of old Lab releases.
-      ensure
-        sleep 1
-        test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{opt[:browser]}_#{opt[:cloud]}].png", int_url, opt[:browser]
       end
+      # This will test if model can be run at least for 0.5s. Then it's reloaded and stopped (as some models are
+      # automatically started in "onLoad" scripts, what would cause that screenshots will be always different).
+      driver.execute_script 'Embeddable.controller.on("modelLoaded.selenium-test", function() { script.stop(); });' \
+                            'script.start();' \
+                            'setTimeout(function() { script.reloadModel(); }, 500);'
+      begin
+        # Extra time for iframe model type.
+        driver.find_element(:id => 'iframe-model')
+        puts 'iframe model detected, extra sleep time added...'
+        sleep 10
+      rescue Selenium::WebDriver::Error::NoSuchElementError
+        # It's present only in JSmol interactives.
+      end
+      sleep 1
+      test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{opt[:browser]}_#{opt[:cloud]}].png", int_url, opt[:browser]
       # Test completed without errors, we can remove this particular interactive from list.
       opt[:interactives_to_test].shift
     end

@@ -128,7 +128,7 @@ class TestHelper
 
   def root_mean_squared_error(array)
     return 0 if array.length == 0
-    sq_sum = array.reduce { |sum, n| sum += n * n }
+    sq_sum = array.reduce { |sum, n| sum ||= 0; n ||= 0; sum += n * n }
     return Math::sqrt(sq_sum / array.length)
   end
 end
