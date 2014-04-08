@@ -3,7 +3,7 @@ require 'selenium-webdriver'
 
 module SeleniumHelper
   SAUCELABS_URL = "http://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:80/wd/hub"
-  BROWSERSTACK_URL = "http://PiotrJanik:F7suzt0xQmJe6fZIqn2r@hub.browserstack.com/wd/hub"
+  BROWSERSTACK_URL = "http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub"
   SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :iPad]
 
   def self.execute_on(browser, cloud, name)
@@ -60,30 +60,32 @@ module SeleniumHelper
       case browser
       when SUPPORTED_BROWSERS[0]
         caps['browser'] = 'Chrome'
-        caps['browser_version'] = '33'
+        caps['browser_version'] = '33.0'
         caps['os'] = 'OS X'
         caps['os_version'] = 'Mountain Lion'
       when SUPPORTED_BROWSERS[1]
         caps['browser'] = 'Safari'
-        caps['browser_version'] = '6.1'
+        caps['browser_version'] = '7.0'
         caps['os'] = 'OS X'
-        caps['os_version'] = 'Mountain Lion'
+        caps['os_version'] = 'Mavericks'
       when SUPPORTED_BROWSERS[2]
         caps['browser'] = 'Firefox'
         caps['browser_version'] = '27.0'
-        caps['os'] = 'WINDOWS'
+        caps['os'] = 'Windows'
         caps['os_version'] = '7'
       when SUPPORTED_BROWSERS[3]
         caps['browser'] = 'IE'
         caps['browser_version'] = '9.0'
-        caps['os'] = 'WINDOWS'
+        caps['os'] = 'Windows'
         caps['os_version'] = '7'
       when SUPPORTED_BROWSERS[4]
         caps['browser'] = 'IE'
         caps['browser_version'] = '10.0'
-        caps['os'] = 'WINDOWS'
+        caps['os'] = 'Windows'
         caps['os_version'] = '8'
       when SUPPORTED_BROWSERS[5]
+        caps['browserName'] = 'iPad'
+        caps['platform'] = 'MAC'
         caps['device'] = 'iPad 3rd (7.0)'
         caps['deviceOrientation'] = 'landscape'
       else
