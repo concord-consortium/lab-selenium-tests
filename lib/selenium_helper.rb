@@ -4,7 +4,7 @@ require 'selenium-webdriver'
 module SeleniumHelper
   SAUCELABS_URL = "http://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:80/wd/hub"
   BROWSERSTACK_URL = "http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub"
-  SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :iPad]
+  SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android]
   SUPPORTED_PLATFORMS = [:OSX_10_8, :OSX_10_9, :Win_7, :Win_8, :Win_8_1, :Linux]
   DEFAULT_PLATFORM = {
     :Chrome => :OSX_10_8,
@@ -12,7 +12,9 @@ module SeleniumHelper
     :Firefox => :Win_7,
     :IE9 => :Win_7,
     :IE10 => :Win_8,
-    :iPad => nil
+    :IE11 => :Win_8_1,
+    :iPad => nil,
+    :Android => nil
   }
 
   def self.execute_on(browser, platform, cloud, name)
@@ -56,9 +58,18 @@ module SeleniumHelper
         caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
         caps.version = '10'
       when SUPPORTED_BROWSERS[5]
+        caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
+        caps.version = '11'
+      when SUPPORTED_BROWSERS[6]
         caps = Selenium::WebDriver::Remote::Capabilities.ipad
         caps.platform = 'OS X 10.9'
         caps.version = '7.0'
+        caps['device-orientation'] = 'landscape'
+      when SUPPORTED_BROWSERS[7]
+        caps = Selenium::WebDriver::Remote::Capabilities.android
+        caps.platform = 'Linux'
+        caps.version = '4.3'
+        caps['device-type'] = 'tablet'
         caps['device-orientation'] = 'landscape'
       else
         raise 'Incorrect browser name.'
@@ -82,9 +93,17 @@ module SeleniumHelper
         caps['browser'] = 'IE'
         caps['browser_version'] = '10.0'
       when SUPPORTED_BROWSERS[5]
+        caps['browser'] = 'IE'
+        caps['browser_version'] = '11.0'  
+      when SUPPORTED_BROWSERS[5]
         caps['browserName'] = 'iPad'
         caps['platform'] = 'MAC'
         caps['device'] = 'iPad 3rd (7.0)'
+        caps['deviceOrientation'] = 'landscape'
+      when SUPPORTED_BROWSERS[5]
+        caps['browserName'] = 'android'
+        caps['platform'] = 'ANDROID'
+        caps['device'] = 'Google Nexus 7'
         caps['deviceOrientation'] = 'landscape'
       else
         raise 'Incorrect browser name.'
