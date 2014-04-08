@@ -95,12 +95,12 @@ module SeleniumHelper
       when SUPPORTED_BROWSERS[5]
         caps['browser'] = 'IE'
         caps['browser_version'] = '11.0'  
-      when SUPPORTED_BROWSERS[5]
+      when SUPPORTED_BROWSERS[6]
         caps['browserName'] = 'iPad'
         caps['platform'] = 'MAC'
         caps['device'] = 'iPad 3rd (7.0)'
         caps['deviceOrientation'] = 'landscape'
-      when SUPPORTED_BROWSERS[5]
+      when SUPPORTED_BROWSERS[7]
         caps['browserName'] = 'android'
         caps['platform'] = 'ANDROID'
         caps['device'] = 'Google Nexus 7'
