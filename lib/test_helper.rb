@@ -119,7 +119,7 @@ class TestHelper
   end
 
   def compare_images(path_a, path_b) 
-    return nil if !File.exist?(path_a) or !File.exist?(path_b)
+    return 100 if !File.exist?(path_a) or !File.exist?(path_b)
     a = Magick::Image::read(path_a).first  
     b = Magick::Image::read(path_b).first 
     a.resize!(b.columns, b.rows) if a.columns != b.columns or a.rows != b.rows
@@ -128,7 +128,7 @@ class TestHelper
 
   def root_mean_squared_error(array)
     return 0 if array.length == 0
-    sq_sum = array.reduce { |sum, n| sum ||= 0; n ||= 0; sum += n * n }
+    sq_sum = array.reduce { |sum, n| sum += n * n }
     return Math::sqrt(sq_sum / array.length)
   end
 end
