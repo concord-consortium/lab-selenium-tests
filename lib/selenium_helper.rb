@@ -7,11 +7,11 @@ module SeleniumHelper
   SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android]
   SUPPORTED_PLATFORMS = [:OSX_10_8, :OSX_10_9, :Win_7, :Win_8, :Win_8_1, :Linux]
   DEFAULT_PLATFORM = {
-    :Chrome => :OSX_10_8,
+    :Chrome => :Win_7,
     :Safari => :OSX_10_9,
     :Firefox => :Win_7,
     :IE9 => :Win_7,
-    :IE10 => :Win_8,
+    :IE10 => :Win_7,
     :IE11 => :Win_8_1,
     :iPad => nil,
     :Android => nil
