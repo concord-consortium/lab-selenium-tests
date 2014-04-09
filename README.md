@@ -49,15 +49,13 @@ Usage
 Usage: test.rb [options]
 
 Specific options:
-    -b, --browser BROWSER            Browser that should be tested (Chrome, Safari, Firefox, IE9, IE10, iPad), 
-                                     default Chrome.
+    -b, --browser BROWSER            Browser that should be tested (Chrome, Safari, Firefox, IE9, IE10, IE11, iPad,
+                                     Android), default Chrome.
     -p, --platform PLATFORM          Platform (OS) that should be tested (OSX_10_8, OSX_10_9, Win_7, Win_8, Win_8_1,
                                      Linux), by default platform is chosen automatically (each browser has related
                                      default platform).
                                      Note that enforcing platform can cause an error, as not every browser and platform
-                                     combination is supported by SauceLabs and BrowserStack. Also screenshots 
-                                     comparsion results may be affected, as reference screenshots are taken on default
-                                     platform for given browser.
+                                     combination is supported by SauceLabs and BrowserStack.
     -l, --lab LAB_ENVIRONMENT        Lab environment (production, staging or dev), default dev.
     -c, --cloud CLOUD                Cloud environment (SauceLabs or BrowserStack), default SauceLabs.
     -n, --name NAME                  Test name, by default created automatically.
