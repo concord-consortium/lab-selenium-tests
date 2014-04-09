@@ -99,7 +99,7 @@ begin
       rescue Selenium::WebDriver::Error::NoSuchElementError
         # It's present only in JSmol interactives.
       end
-      sleep 1
+      sleep 1.5
       test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{opt[:browser]}_#{opt[:cloud]}].png", int_url, opt[:browser]
       # Test completed without errors, we can remove this particular interactive from list.
       opt[:interactives_to_test].shift
