@@ -23,7 +23,7 @@ class TestHelper
     driver.save_screenshot screenshot_path
 
     if browser == :iPad
-      img = Magick::Image::read(screenshot_path).first
+      img = Magick::Image.read(screenshot_path).first
       # iPad screenshots are rotated...
       img.rotate!(-90)
       # They also contain top bar with clock, URL etc. We don't need it,
@@ -33,12 +33,12 @@ class TestHelper
     end
 
     new_image = {
-      :filename => filename,
-      :diff     => compare_images(screenshot_path, screenshot_path.gsub(@test_dir, @@expected_screenshots_dir)),
-      :interactiveUrl => interactive_url
+      filename: filename,
+      diff: compare_images(screenshot_path, screenshot_path.gsub(@test_dir, @@expected_screenshots_dir)),
+      interactiveUrl: interactive_url
     }
     @images_diff << new_image[:diff]
-    add_js_image_metadata new_image
+    add_js_image_metadata(new_image)
     update_tests_metadata
   end
 
@@ -48,13 +48,13 @@ class TestHelper
       content = f.read
       array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
       tests_to_remove = array[0...count]
-      array = array.drop count
+      array = array.drop(count)
       f.rewind
-      f.puts 'var TESTS_METADATA ='
-      f.puts JSON.pretty_generate(array)
-      f.puts ';'
+      f.puts('var TESTS_METADATA =')
+      f.puts(JSON.pretty_generate(array))
+      f.puts(';')
       f.flush
-      f.truncate f.pos
+      f.truncate(f.pos)
     end
     tests_to_remove.each do |test|
       path = "#{@@main_dir}/#{test['testName']}"
@@ -64,25 +64,25 @@ class TestHelper
   end
 
   def self.open_and_lock_file(file)
-    File.open(file, File::RDWR|File::CREAT, 0644) do |f|
+    File.open(file, File::RDWR | File::CREAT, 0644) do |f|
       begin
-        f.flock File::LOCK_EX
+        f.flock(File::LOCK_EX)
         yield f
       ensure
-        f.flock File::LOCK_UN
+        f.flock(File::LOCK_UN)
       end
     end
   end
 
-  private 
+  private
 
   def update_tests_metadata
     new_test_metadata = {
-      :testName => @test_name,
-      :date => @test_date,
-      :expectedScreenshotsCount => @expected_screenshots_count,
-      :savedScreenshotsCount => @images_diff.length,
-      :rootMeanSquaredError => root_mean_squared_error(@images_diff)
+      testName: @test_name,
+      date: @test_date,
+      expectedScreenshotsCount: @expected_screenshots_count,
+      savedScreenshotsCount: @images_diff.length,
+      rootMeanSquaredError: root_mean_squared_error(@images_diff)
     }
 
     TestHelper.open_and_lock_file "#{@@tests_metadata}" do |f|
@@ -92,15 +92,15 @@ class TestHelper
       index = array.index { |m| m['testName'] == @test_name }
       if index
         array[index] = new_test_metadata
-      else 
+      else
         array << new_test_metadata
       end
       f.rewind
-      f.puts 'var TESTS_METADATA ='
-      f.puts JSON.pretty_generate(array)
-      f.puts ';'
+      f.puts('var TESTS_METADATA =')
+      f.puts(JSON.pretty_generate(array))
+      f.puts(';')
       f.flush
-      f.truncate f.pos
+      f.truncate(f.pos)
     end
   end
 
@@ -108,27 +108,27 @@ class TestHelper
     TestHelper.open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
       content = f.read
       array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
-      array.push new_image
+      array.push(new_image)
       f.rewind
-      f.puts 'var IMAGES_METADATA ='
-      f.puts JSON.pretty_generate(array)
-      f.puts ';'
+      f.puts('var IMAGES_METADATA =')
+      f.puts(JSON.pretty_generate(array))
+      f.puts(';')
       f.flush
-      f.truncate f.pos
+      f.truncate(f.pos)
     end
   end
 
-  def compare_images(path_a, path_b) 
-    return 100 if !File.exist?(path_a) or !File.exist?(path_b)
-    a = Magick::Image::read(path_a).first  
-    b = Magick::Image::read(path_b).first 
-    a.resize!(b.columns, b.rows) if a.columns != b.columns or a.rows != b.rows
+  def compare_images(path_a, path_b)
+    return 100 if !File.exist?(path_a) || !File.exist?(path_b)
+    a = Magick::Image.read(path_a).first
+    b = Magick::Image.read(path_b).first
+    a.resize!(b.columns, b.rows) if a.columns != b.columns || a.rows != b.rows
     a.compare_channel(b, Magick::RootMeanSquaredErrorMetric)[1] * 100
   end
 
   def root_mean_squared_error(array)
     return 0 if array.length == 0
-    sq_sum = array.reduce { |sum, n| sum += n * n }
-    return Math::sqrt(sq_sum / array.length)
+    sq_sum = array.reduce { |a, e| a + e * e }
+    Math.sqrt(sq_sum / array.length)
   end
 end
