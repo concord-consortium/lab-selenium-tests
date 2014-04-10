@@ -65,11 +65,8 @@ opt_parser.parse! ARGV
 
 # Calculate some options if they are not explicitly provided.
 platform_name = opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]
-opt[:test_name] = "#{opt[:lab_env]}_#{opt[:browser]}_#{platform_name}_#{opt[:cloud]}_#{Time.now.to_i}" if !opt[:test_name]
-opt[:interactives_to_test] = LabHelper::public_curricular_interactives(opt[:lab_env]) if !opt[:interactives_to_test]
-
-# Global variables that can be used by custom tests:
-
+opt[:test_name] ||= "#{opt[:lab_env]}_#{opt[:browser]}_#{platform_name}_#{opt[:cloud]}_#{Time.now.to_i}"
+opt[:interactives_to_test] ||= LabHelper.interactives(opt[:lab_env])
 
 # Actual test.
 test_helper = TestHelper.new opt[:test_name], opt[:interactives_to_test].length
@@ -91,7 +88,7 @@ begin
         # Ignore timeout in case we use the same test to get screenshots of old Lab releases.
       end
       
-      # Execute interactive test.
+      # Execute interactive test (note that interactive is already loaded and rendered!).
       # All interactive tests can use TestAPI instance exposed in $test global variable.
       $test = TestAPI.new driver, test_helper, int_path, int_url, opt[:browser], opt[:cloud]
       # Test script name should be correspond to interactive path:
