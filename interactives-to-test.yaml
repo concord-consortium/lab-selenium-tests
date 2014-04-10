@@ -1,8 +1,8 @@
 # This part of config file specifies which interactives listed in interactives.json file
 # (e.g. lab.concord.org/interactives.json) will be tested.
-interactives.json: 
+interactives.json:
   # You can completely disable downloading and processing of interactives.json.
-  enabled: true
+  enabled: false
   # Specify which publication statuses are allowed.
   publicationStatus:
     public: true
@@ -16,10 +16,10 @@ interactives.json:
     Examples: false
     Tests: false
 
-# You can also provide list of interactives manually. 
+# You can also provide list of interactives manually.
 # It will be appended to the list of interactives obtained from interactives.json.
 customList:
 # e.g.:
-# - interactives/samples/1-oil-and-water-shake.json
+- interactives/samples/1-oil-and-water-shake.json
 # - interactives/samples/2-simple-gas.json
 # etc.

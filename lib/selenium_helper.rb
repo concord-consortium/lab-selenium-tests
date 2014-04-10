@@ -64,7 +64,7 @@ module SeleniumHelper
       when SUPPORTED_BROWSERS[6]
         caps = Selenium::WebDriver::Remote::Capabilities.ipad
         caps.platform = 'OS X 10.9'
-        caps.version = '7.0'
+        caps.version = '7.1'
         caps['device-orientation'] = 'landscape'
       when SUPPORTED_BROWSERS[7]
         caps = Selenium::WebDriver::Remote::Capabilities.android
