@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require './lib/test_helper'
+require './lib/test_api'
 require './lib/lab_helper'
 require './lib/selenium_helper'
 
@@ -67,11 +68,14 @@ platform_name = opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]
 opt[:test_name] = "#{opt[:lab_env]}_#{opt[:browser]}_#{platform_name}_#{opt[:cloud]}_#{Time.now.to_i}" if !opt[:test_name]
 opt[:interactives_to_test] = LabHelper::public_curricular_interactives(opt[:lab_env]) if !opt[:interactives_to_test]
 
+# Global variables that can be used by custom tests:
+
+
 # Actual test.
 test_helper = TestHelper.new opt[:test_name], opt[:interactives_to_test].length
 attempt = 0
 begin
-  SeleniumHelper::execute_on opt[:browser], opt[:platform], opt[:cloud], "Lab interactives screenshots generation" do |driver|
+  SeleniumHelper::execute_on opt[:browser], opt[:platform], opt[:cloud], 'Lab interactives screenshots generation' do |driver|
     # Implicit wait e.g. while calling find_element method.
     driver.manage.timeouts.implicit_wait = 0 # seconds
     while opt[:interactives_to_test].length > 0
@@ -86,21 +90,24 @@ begin
         # 'interactive-rendered' class was added in the recent Lab version. 
         # Ignore timeout in case we use the same test to get screenshots of old Lab releases.
       end
-      # This will test if model can be run at least for 0.5s. Then it's reloaded and stopped (as some models are
-      # automatically started in "onLoad" scripts, what would cause that screenshots will be always different).
-      driver.execute_script 'Embeddable.controller.on("modelLoaded.selenium-test", function() { script.stop(); });' \
-                            'script.start();' \
-                            'setTimeout(function() { script.reloadModel(); }, 500);'
-      begin
-        # Extra time for iframe model type.
-        driver.find_element(:id => 'iframe-model')
-        puts 'iframe model detected, extra sleep time added...'
-        sleep 15
-      rescue Selenium::WebDriver::Error::NoSuchElementError
-        # It's present only in JSmol interactives.
+      
+      # Execute interactive test.
+      # All interactive tests can use TestAPI instance exposed in $test global variable.
+      $test = TestAPI.new driver, test_helper, int_path, int_url, opt[:browser], opt[:cloud]
+      # Test script name should be correspond to interactive path:
+      # 1. all '/' should be replaced by '_',
+      # 2. file extension should be '.rb' instead of '.json'.
+      # E.g. to create script for 'interactives/samples/1-oil-and-water-shake.json' interactive,
+      # its name should be 'interactives_samples_1-oil-and-water-shake.rb'.
+      test_script_name = "interactive-tests/#{int_path.gsub(/[\/\s]/, '_').gsub('json', 'rb')}"
+      if File.file? test_script_name
+        # Interactive-specific test script found, execute it.
+        load test_script_name, true
+      else
+        # Default test that should work for every interactive.
+        load 'interactive-tests/default.rb'
       end
-      sleep 1.5
-      test_helper.save_screenshot driver, "#{int_path.gsub(/[\/\s]/, '_')}_[#{opt[:browser]}_#{opt[:cloud]}].png", int_url, opt[:browser]
+      
       # Test completed without errors, we can remove this particular interactive from list.
       opt[:interactives_to_test].shift
     end
