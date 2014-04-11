@@ -1,8 +1,6 @@
 require 'selenium-webdriver'
 
 module SeleniumHelper
-  SAUCELABS_URL = 'http://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:80/wd/hub'
-  BROWSERSTACK_URL = 'http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub'
   SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android]
   SUPPORTED_PLATFORMS = [:OSX_10_8, :OSX_10_9, :Win_7, :Win_8, :Win_8_1, :Linux]
   DEFAULT_PLATFORM = {
@@ -15,19 +13,27 @@ module SeleniumHelper
     iPad: nil,
     Android: nil
   }
+  CLOUD_URL = {
+    SauceLabs: 'http://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:80/wd/hub',
+    BrowserStack: 'http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub',
+    local: nil
+  }
 
   module_function
 
   def execute_on(browser, platform, cloud, name)
-    url = cloud == :SauceLabs ? SAUCELABS_URL : BROWSERSTACK_URL
-    # Each browser has its default platform, however client code can enforce specific one.
-    platform ||= DEFAULT_PLATFORM[browser]
-    caps = get_capabilities(browser, cloud)
-
-    set_platform(caps, platform, cloud) if platform # e.g. iPad doesn't need it.
-    caps['name'] = name
-    caps['max-duration'] = 10_800
-    driver = Selenium::WebDriver.for(:remote, url: url, desired_capabilities: caps)
+    driver = if cloud != :local
+               url = CLOUD_URL[cloud]
+               # Each browser has its default platform, however client code can enforce specific one.
+               platform ||= DEFAULT_PLATFORM[browser]
+               caps = get_capabilities(browser, cloud)
+               set_platform(caps, platform, cloud) if platform
+               caps['name'] = name
+               caps['max-duration'] = 10_800
+               Selenium::WebDriver.for(:remote, url: url, desired_capabilities: caps)
+             else
+               Selenium::WebDriver.for(:firefox)
+             end
     puts '[webdriver] created'
     # driver.manage.timeouts.implicit_wait = 60
     # driver.manage.timeouts.script_timeout = 300

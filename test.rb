@@ -42,8 +42,8 @@ opt_parser = OptionParser.new do |o|
     opt[:lab_env] = lab_env
   end
   o.on('-c', '--cloud CLOUD',
-       [:SauceLabs, :BrowserStack],
-       'Cloud environment (SauceLabs or BrowserStack), default SauceLabs.') do |cloud|
+       [:SauceLabs, :BrowserStack, :local],
+       'Test / cloud environment (SauceLabs, BrowserStack or local), default SauceLabs.') do |cloud|
     opt[:cloud] = cloud
   end
   o.on('-n', '--name NAME',
@@ -65,8 +65,9 @@ end
 opt_parser.parse!(ARGV)
 
 # Calculate some options if they are not explicitly provided.
-platform_name = opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]
-opt[:test_name] ||= "#{opt[:lab_env]}_#{opt[:browser]}_#{platform_name}_#{opt[:cloud]}_#{Time.now.to_i}"
+desc = opt[:cloud] == :local ? 'Firefox_local' :
+       "#{opt[:browser]}_#{opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]}_#{opt[:cloud]}"
+opt[:test_name] ||= "#{opt[:lab_env]}_#{desc}_#{Time.now.to_i}"
 opt[:interactives_to_test] ||= LabHelper.interactives(opt[:lab_env])
 
 # Actual test.
