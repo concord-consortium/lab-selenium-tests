@@ -6,10 +6,11 @@ class TestHelper
   @@tests_metadata = "#{@@main_dir}/metadata.js"
   @@expected_screenshots_dir = "#{@@main_dir}/expected_screenshots"
 
-  def initialize(test_name, expected_screenshots_count)
+  def initialize(test_name, interactives_count)
     @test_name = "test_#{test_name || Time.now.to_i}"
     @test_dir = "#{@@main_dir}/#{@test_name}"
-    @expected_screenshots_count = expected_screenshots_count
+    @interactives_count = interactives_count
+    @tested_interactives_count = 0
     @test_date = Time.now
     @images_diff = []
     # Prepare screenshots/test_<timestamp> folder.
@@ -39,6 +40,11 @@ class TestHelper
     }
     @images_diff << new_image[:diff]
     add_js_image_metadata(new_image)
+    update_tests_metadata
+  end
+
+  def interactive_test_completed
+    @tested_interactives_count += 1
     update_tests_metadata
   end
 
@@ -80,8 +86,8 @@ class TestHelper
     new_test_metadata = {
       testName: @test_name,
       date: @test_date,
-      expectedScreenshotsCount: @expected_screenshots_count,
-      savedScreenshotsCount: @images_diff.length,
+      interactivesCount: @interactives_count,
+      testedInteractivesCount: @tested_interactives_count,
       rootMeanSquaredError: root_mean_squared_error(@images_diff)
     }
 

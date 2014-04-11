@@ -108,6 +108,7 @@ begin
       end
 
       # Test completed without errors, we can remove this particular interactive from list.
+      test_helper.interactive_test_completed
       opt[:interactives_to_test].shift
     end
   end

@@ -44,7 +44,7 @@
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="metadata.js"></script>
   <script>
-    $(function () {      
+    $(function () {
       function getLinkCallback(url) {
         return function() {
           window.open(url, '_blank');
@@ -63,8 +63,10 @@
         $test.append('<td class="idx">#' + (i + 1) + '</td>');
         $test.append('<td class="date">' + test.date + '</td>');
         $test.append('<td class="name">' + test.testName + '</td>');
-        $test.append('<td>progress:</td><td class="progress">' + 
-                     test.savedScreenshotsCount + '/' + test.expectedScreenshotsCount + '</td>');
+        $test.append('<td>progress:</td><td class="progress">' +
+                     (test.interactivesCount !== undefined ? test.testedInteractivesCount + '/' + test.interactivesCount :
+                                                             test.savedScreenshotsCount +   '/' + test.expectedScreenshotsCount) +
+                     '</td>');
         $test.append('<td>error:</td><td class="error">' + (test.rootMeanSquaredError.toFixed(2) + "%") + '</td>');
       }
     });
