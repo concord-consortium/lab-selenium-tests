@@ -11,8 +11,8 @@ interactives.json:
     broken: false
   # Specify which categories are allowed.
   category:
+    Samples: true
     Curriculum: true
-    Samples: false
     Examples: false
     Tests: false
 
