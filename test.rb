@@ -102,10 +102,10 @@ begin
       test_script_name = "interactive-tests/#{int_path.gsub(/[\/\s]/, '_').gsub('json', 'rb')}"
       if File.file?(test_script_name)
         # Interactive-specific test script found, execute it.
-        load test_script_name, true
+        load(test_script_name, true)
       else
         # Default test that should work for every interactive.
-        load 'interactive-tests/default.rb'
+        load('interactive-tests/default.rb', true)
       end
 
       # Test completed without errors, we can remove this particular interactive from list.
