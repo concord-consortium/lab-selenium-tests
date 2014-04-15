@@ -84,7 +84,7 @@ If you need to provide custom configuration but you don't want to update default
 in `interactives-to-test.yaml` file (no **default** segment). It's ignored by Git and takes precedence over
 interactives-to-test.default.yaml configuration.
 
-Custom, interactive-specific test scripts
+Interactive-specific tests
 ====
 
 They should be placed in [interactive-test](https://github.com/concord-consortium/lab-selenium-tests/tree/master/interactive-tests) directory.
