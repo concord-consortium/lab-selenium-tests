@@ -88,10 +88,10 @@ begin
       # Execute interactive test (note that interactive is already loaded and rendered!).
       # All interactive tests can use TestAPI instance exposed in $test global variable.
       $test = TestAPI.new(driver, test_helper, int_path, int_url, opt[:browser], opt[:cloud])
-      # Test script name should be correspond to interactive path:
-      # 1. all '/' should be replaced by '_',
-      # 2. file extension should be '.rb' instead of '.json'.
-      # E.g. to create script for 'interactives/samples/1-oil-and-water-shake.json' interactive,
+      # Test script name should correspond to interactive path:
+      # 1. All '/' should be replaced by '_'.
+      # 2. File extension should be '.rb' instead of '.json'.
+      # E.g. to create custom test of 'interactives/samples/1-oil-and-water-shake.json' interactive,
       # its name should be 'interactives_samples_1-oil-and-water-shake.rb'.
       test_script_name = "interactive-tests/#{int_path.gsub(/[\/\s]/, '_').gsub('json', 'rb')}"
       if File.file?(test_script_name)
