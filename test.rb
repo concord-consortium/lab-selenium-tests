@@ -14,8 +14,7 @@ opt = {
   cloud: :SauceLabs,
   # Number of attempts to finish the test in case of errors.
   max_attempts: 25,
-  test_name: nil,
-  interactives_to_test: nil
+  test_name: nil
 }
 
 opt_parser = OptionParser.new do |o|
@@ -54,12 +53,6 @@ opt_parser = OptionParser.new do |o|
        'Maximum number of attempts to accomplish the test in case of errors, default 25.') do |a|
     opt[:max_attempts] = a
   end
-  o.on('-i', '--interactives i1,i2,i3',
-       Array,
-       'List of interactives to test, by default interactives.json is downloaded',
-       'and all public, curricular interactives are tested.') do |interactives|
-    opt[:interactives_to_test] = interactives
-  end
 end
 
 opt_parser.parse!(ARGV)
@@ -68,18 +61,19 @@ opt_parser.parse!(ARGV)
 desc = opt[:cloud] == :local ? 'Firefox_local' :
        "#{opt[:browser]}_#{opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]}_#{opt[:cloud]}"
 opt[:test_name] ||= "#{opt[:lab_env]}_#{desc}_#{Time.now.to_i}"
-opt[:interactives_to_test] ||= LabHelper.interactives(opt[:lab_env])
+
+interactives_to_test = LabHelper.interactives(opt[:lab_env])
 
 # Actual test.
-test_helper = TestHelper.new(opt[:test_name], opt[:interactives_to_test].length)
+test_helper = TestHelper.new(opt[:test_name], interactives_to_test.length)
 attempt = 0
 begin
   SeleniumHelper.execute_on(opt[:browser], opt[:platform], opt[:cloud],
                             'Lab interactives screenshots generation') do |driver|
     # Implicit wait e.g. while calling find_element method.
     driver.manage.timeouts.implicit_wait = 0 # seconds
-    while opt[:interactives_to_test].length > 0
-      int_path = opt[:interactives_to_test][0]
+    while interactives_to_test.length > 0
+      int_path = interactives_to_test[0]
       puts int_path
       int_url = LabHelper.interactive_url(int_path, opt[:lab_env])
       driver.navigate.to(int_url)
@@ -110,7 +104,7 @@ begin
 
       # Test completed without errors, we can remove this particular interactive from list.
       test_helper.interactive_test_completed
-      opt[:interactives_to_test].shift
+      interactives_to_test.shift
     end
   end
 rescue => e

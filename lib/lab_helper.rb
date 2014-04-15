@@ -9,7 +9,8 @@ module LabHelper
     staging:    'http://lab-staging.concord.org/',
     dev:        'http://lab.dev.concord.org/'
   }
-  INTERACTIVES_CONFIG_FILE = 'interactives-to-test.yaml'
+  CUSTOM_CONFIG = 'interactives-to-test.yaml'
+  DEFAULT_CONFIG = 'interactives-to-test.default.yaml'
 
   module_function
 
@@ -18,7 +19,7 @@ module LabHelper
   end
 
   def interactives(env)
-    config = YAML.load_file(INTERACTIVES_CONFIG_FILE)
+    config = File.file?(CUSTOM_CONFIG) ? YAML.load_file(CUSTOM_CONFIG) : YAML.load_file(DEFAULT_CONFIG)
     interactives = []
     if config['interactives.json']['enabled']
       res = filter_interactives_json(env, config['interactives.json']['category'],

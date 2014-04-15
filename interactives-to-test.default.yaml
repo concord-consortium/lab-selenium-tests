@@ -1,0 +1,23 @@
+interactives.json:
+  # Specify which interactives listed in interactive.json file
+  # (e.g. http://lab.concord.org/interactives.json) should be tested.
+  # If you want to provide list of interactives manually, set
+  # 'enabled: false' and use 'customList' option.
+  enabled: true
+  publicationStatus:
+    public: true
+    sample: true
+    draft: false
+    broken: false
+  category:
+    Samples: true
+    Curriculum: true
+    Examples: false
+    Tests: false
+
+customList:
+  # You can also provide a custom list of interactives to test.
+  # It will be appended to the list of interactives obtained from interactives.json processing.
+  # e.g.:
+  # - interactives/samples/1-oil-and-water-shake.json
+  # - interactives/samples/2-simple-gas.json
