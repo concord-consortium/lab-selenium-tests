@@ -59,4 +59,14 @@ class TestAPI
       $test.driver.find_element(:css, "##{id} .selectboxit-options li:nth-child(#{option_idx + 1}) a").click
     end
   end
+
+  def select_radio_option(id, option_idx)
+    css_selector = "##{id} .option:nth-child(#{option_idx + 1}) .fakeCheckable"
+    case @browser
+    when :iPad
+      @driver.execute_script "$('#{css_selector}').click();"
+    else
+      $test.driver.find_element(:css, css_selector).click
+    end
+  end
 end
