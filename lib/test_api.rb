@@ -16,4 +16,13 @@ class TestAPI
     @test_helper.save_screenshot @driver, "#{@screenshot_name}#{suffix}.png", @int_url, @browser
     @screenshots_count += 1
   end
+
+  def click_button(css_selector)
+    case @browser
+    when :iPad
+      @driver.execute_script "$('#{css_selector}').click();"
+    else
+      $test.driver.find_element(:css, css_selector).click
+    end
+  end
 end
