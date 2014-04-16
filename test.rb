@@ -69,7 +69,7 @@ test_helper = TestHelper.new(opt[:test_name], interactives_to_test.length)
 attempt = 0
 begin
   SeleniumHelper.execute_on(opt[:browser], opt[:platform], opt[:cloud],
-                            'Lab interactives screenshots generation') do |driver|
+                            'Lab interactives screenshots generation') do |driver, capybara|
     # Implicit wait e.g. while calling find_element method.
     driver.manage.timeouts.implicit_wait = 0 # seconds
     while interactives_to_test.length > 0
@@ -87,7 +87,7 @@ begin
 
       # Execute interactive test (note that interactive is already loaded and rendered!).
       # All interactive tests can use TestAPI instance exposed in $test global variable.
-      $test = TestAPI.new(driver, test_helper, int_path, int_url, opt[:browser], opt[:cloud])
+      $test = TestAPI.new(driver, capybara, test_helper, int_path, int_url, opt[:browser], opt[:cloud])
       # Test script name should correspond to interactive path:
       # 1. All '/' should be replaced by '_'.
       # 2. File extension should be '.rb' instead of '.json'.

@@ -1,4 +1,5 @@
 require 'selenium-webdriver'
+require 'capybara'
 
 module SeleniumHelper
   SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android]
@@ -22,27 +23,32 @@ module SeleniumHelper
   module_function
 
   def execute_on(browser, platform, cloud, name)
-    driver = if cloud != :local
-               url = CLOUD_URL[cloud]
-               # Each browser has its default platform, however client code can enforce specific one.
-               platform ||= DEFAULT_PLATFORM[browser]
-               caps = get_capabilities(browser, cloud)
-               set_platform(caps, platform, cloud) if platform
-               caps['name'] = name
-               caps['max-duration'] = 10_800
-               Selenium::WebDriver.for(:remote, url: url, desired_capabilities: caps)
-             else
-               Selenium::WebDriver.for(:firefox)
-             end
+    capybara =
+      if cloud != :local
+        url = CLOUD_URL[cloud]
+        # Each browser has its default platform, however client code can enforce specific one.
+        platform ||= DEFAULT_PLATFORM[browser]
+        caps = get_capabilities(browser, cloud)
+        set_platform(caps, platform, cloud) if platform
+        caps['name'] = name
+        caps['max-duration'] = 10_800
+        Capybara.register_driver :remote_browser do |app|
+          Capybara::Selenium::Driver.new(app, browser: :remote, url: url, desired_capabilities: caps)
+        end
+        Capybara::Session.new(:remote_browser)
+      else
+        Capybara::Session.new(:selenium)
+      end
+    driver = capybara.driver.browser
     puts '[webdriver] created'
     # driver.manage.timeouts.implicit_wait = 60
     # driver.manage.timeouts.script_timeout = 300
     # driver.manage.timeouts.page_load = 300
     begin
-      yield driver
+      yield driver, capybara
     ensure
       puts '[webdriver] quit'
-      driver.quit
+      Capybara.reset_sessions!
     end
   end
 

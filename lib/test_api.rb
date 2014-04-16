@@ -1,8 +1,9 @@
 class TestAPI
-  attr_reader :driver, :browser
+  attr_reader :driver, :capybara, :browser
 
-  def initialize(driver, test_helper, interactive_path, interactive_url, browser, cloud)
+  def initialize(driver, capybara, test_helper, interactive_path, interactive_url, browser, cloud)
     @driver = driver
+    @capybara = capybara
     @test_helper = test_helper
     @int_url = interactive_url
     @browser = browser
