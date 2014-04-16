@@ -1,50 +1,50 @@
 # Initial cells view.
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 # DNA strands.
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 # Separated DNA.
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
 # Test animation ()
-$test.click_button('#transcribe-step > button')
+$test.click_button('transcribe-step')
 $test.save_screenshot
 
 # Complete transcription.
 32.times do
-  $test.click_button('#next-state-jump > button')
+  $test.click_button('next-state-jump')
 end
 $test.save_screenshot
 
 # Animation till the end of transcription.
-$test.click_button('#transcribe > button')
+$test.click_button('transcribe')
 sleep 2
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
-$test.click_button('#next-state-jump > button')
+$test.click_button('next-state-jump')
 $test.save_screenshot
 
 # Translation animation.
-$test.click_button('#translate-step > button')
+$test.click_button('translate-step')
 sleep 2
 $test.save_screenshot
 

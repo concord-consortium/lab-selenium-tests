@@ -20,12 +20,25 @@ class TestAPI
     @screenshots_count += 1
   end
 
-  def click_button(css_selector)
+  def click_element(css_selector)
     case @browser
     when :iPad
       @driver.execute_script "$('#{css_selector}').click();"
     else
       $test.driver.find_element(:css, css_selector).click
+    end
+  end
+
+  # Methods specific for Lab interactive components (widgets).
+  # Note that they all accept ID argument which should be equal to
+  # ID specified in component definition in Interactive JSON.
+
+  def click_button(id)
+    case @browser
+    when :iPad
+      @driver.execute_script "$('##{id} button').click();"
+    else
+      $test.driver.find_element(:css, "##{id} button").click
     end
   end
 
