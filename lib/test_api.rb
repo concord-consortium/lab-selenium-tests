@@ -20,6 +20,21 @@ class TestAPI
     @screenshots_count += 1
   end
 
+  # It's wrapper around .switch_to.alert that can wait for alert to show up.
+  # Note that e.g. Safari doesn't support alert handling, so nil will be
+  # always returned.
+  def switch_to_alert(timeout = 20)
+    sleep_time = 0.5
+    start_time = Time.now
+    alert = nil
+    loop do
+      alert = @driver.switch_to.alert rescue nil
+      break unless alert.nil? && Time.now - start_time < timeout
+      sleep(sleep_time)
+    end
+    alert
+  end
+
   def click_element(css_selector)
     case @browser
     when :iPad
