@@ -20,6 +20,14 @@ module SeleniumHelper
     local: nil
   }
 
+  # Monkey patching, issue described here:
+  # https://groups.google.com/forum/#!topic/ruby-capybara/tZi2F306Fvo
+  class Capybara::Selenium::Driver
+    def clear_browser
+      @browser = nil
+    end
+  end
+
   module_function
 
   def execute_on(browser, platform, cloud, name)
@@ -48,7 +56,8 @@ module SeleniumHelper
       yield driver, capybara
     ensure
       puts '[webdriver] quit'
-      Capybara.reset_sessions!
+      capybara.driver.quit
+      capybara.driver.clear_browser
     end
   end
 
