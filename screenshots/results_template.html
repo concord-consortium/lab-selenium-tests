@@ -124,7 +124,8 @@
         $diff = $('<p class="diff">' + (imgDiff + "%") + '</p>').appendTo($resultInner);
         $('<div class="show-diff">Show diff</div>').on('click', function() {
           var $actualImg = $(this).parent().siblings('img.left');
-          resembleControl = resemble('../expected_screenshots/' + img.filename).compareTo(img.filename).onComplete(function(data) {
+          var imgSrc = $actualImg.attr('src');
+          resembleControl = resemble('../expected_screenshots/' + imgSrc).compareTo(imgSrc).onComplete(function(data) {
             $actualImg.attr('src', data.getImageDataUrl());
           });
         }).appendTo($diff);
