@@ -123,11 +123,22 @@
         $resultInner.append('<p class="link"><a href="' + img.interactiveUrl + '" target="_blank">' + img.interactiveUrl.split("#")[1] + '</a></p>');
         $diff = $('<p class="diff">' + (imgDiff + "%") + '</p>').appendTo($resultInner);
         $('<div class="show-diff">Show diff</div>').on('click', function() {
-          var $actualImg = $(this).parent().siblings('img.left');
-          var imgSrc = $actualImg.attr('src');
-          resembleControl = resemble('../expected_screenshots/' + imgSrc).compareTo(imgSrc).onComplete(function(data) {
-            $actualImg.attr('src', data.getImageDataUrl());
-          });
+          var $this = $(this);
+          var $actualImg = $this.parent().siblings('img.left');
+          switch($this.text()) {
+            case 'Show diff':
+              var imgSrc = $actualImg.attr('src');
+              resembleControl = resemble('../expected_screenshots/' + imgSrc).compareTo(imgSrc).onComplete(function(data) {
+                $actualImg.attr('src', data.getImageDataUrl());
+                $actualImg.data('orig-src', imgSrc);
+              });
+              $this.text("Hide diff");
+              break;
+            default:
+              $actualImg.attr('src', $actualImg.data('orig-src'));
+              $this.text("Show diff");
+              break;
+          }
         }).appendTo($diff);
         $actualImg = $('<img src="' + img.filename + '" class="left">').appendTo($resultInner);
         $('<img src="../expected_screenshots/' + img.filename + '" class="right">')
