@@ -6,8 +6,8 @@ require 'yaml'
 module LabHelper
   LAB_URL = {
     production: 'http://lab.concord.org/',
-    staging:    'http://lab-staging.concord.org/',
-    dev:        'http://lab.dev.concord.org/'
+    staging:    'http://lab-staging-s3.concord.org/branch/staging/',
+    dev:        'http://lab-staging-s3.concord.org/branch/staging/'
   }
   CUSTOM_CONFIG = 'interactives-to-test.yaml'
   DEFAULT_CONFIG = 'interactives-to-test.default.yaml'
