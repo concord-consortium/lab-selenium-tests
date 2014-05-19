@@ -4,25 +4,26 @@ require 'uri'
 require 'yaml'
 
 module LabHelper
-  LAB_URL = {
-    production: 'http://lab.concord.org/',
-    staging:    'http://lab-staging-s3.concord.org/branch/staging/',
-    dev:        'http://lab-staging-s3.concord.org/branch/staging/'
-  }
+  LAB_URL = 'http://lab.concord.org/'
   CUSTOM_CONFIG = 'interactives-to-test.yaml'
   DEFAULT_CONFIG = 'interactives-to-test.default.yaml'
-
+  EMBEDDABLE = {
+    default:    'embeddable.html',
+    production: 'embeddable-production.html',
+    staging:    'embeddable-staging.html',
+    dev:        'embeddable-dev.html'
+  }
   module_function
 
   def interactive_url(int_path, env)
-    LAB_URL[env] + 'embeddable.html#' + int_path
+    LAB_URL + EMBEDDABLE[env] + '#' + int_path
   end
 
-  def interactives(env)
+  def interactives
     config = File.file?(CUSTOM_CONFIG) ? YAML.load_file(CUSTOM_CONFIG) : YAML.load_file(DEFAULT_CONFIG)
     interactives = []
     if config['interactives.json']['enabled']
-      res = filter_interactives_json(env, config['interactives.json']['category'],
+      res = filter_interactives_json(config['interactives.json']['category'],
                                      config['interactives.json']['publicationStatus'])
       interactives.concat(res)
     end
@@ -30,11 +31,11 @@ module LabHelper
     interactives
   end
 
-  def filter_interactives_json(env, category_allowed, status_allowed)
+  def filter_interactives_json(category_allowed, status_allowed)
     # Download interactives.json and return array of interactives paths that
     # have allowed categories and publication statuses.
     interactives = []
-    interactives_json_url = "#{LAB_URL[env]}interactives.json"
+    interactives_json_url = "#{LAB_URL}interactives.json"
     uri = URI.parse(interactives_json_url)
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Get.new(uri.request_uri)

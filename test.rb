@@ -37,7 +37,7 @@ opt_parser = OptionParser.new do |o|
   end
   o.on('-l', '--lab LAB_ENVIRONMENT',
        [:production, :staging, :dev],
-       'Lab environment (production, staging or dev), default dev.') do |lab_env|
+       'Lab environment (production, staging, dev or default), default dev.') do |lab_env|
     opt[:lab_env] = lab_env
   end
   o.on('-c', '--cloud CLOUD',
@@ -62,7 +62,7 @@ desc = opt[:cloud] == :local ? 'Firefox_local' :
        "#{opt[:browser]}_#{opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]}_#{opt[:cloud]}"
 opt[:test_name] ||= "#{opt[:lab_env]}_#{desc}_#{Time.now.to_i}"
 
-interactives_to_test = LabHelper.interactives(opt[:lab_env])
+interactives_to_test = LabHelper.interactives
 
 # Actual test.
 test_helper = TestHelper.new(opt[:test_name], interactives_to_test.length)
