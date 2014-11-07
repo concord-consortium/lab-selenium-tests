@@ -4,7 +4,7 @@ require 'uri'
 require 'yaml'
 
 module LabHelper
-  LAB_URL = 'http://lab.concord.org/'
+  LAB_URL = 'http://lab.concord.org/branch/codap-default-export/'
   CUSTOM_CONFIG = 'interactives-to-test.yaml'
   DEFAULT_CONFIG = 'interactives-to-test.default.yaml'
   EMBEDDABLE = {
