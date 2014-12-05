@@ -10,7 +10,7 @@ opt = {
   browser: :Chrome,
   # By default platform is based on the browser (but user can enforce specific platform).
   platform: nil,
-  lab_env: :dev,
+  lab_env: nil,
   cloud: :SauceLabs,
   # Number of attempts to finish the test in case of errors.
   max_attempts: 25,
@@ -60,6 +60,7 @@ opt_parser.parse!(ARGV)
 # Calculate some options if they are not explicitly provided.
 desc = opt[:cloud] == :local ? 'Firefox_local' :
        "#{opt[:browser]}_#{opt[:platform] || SeleniumHelper::DEFAULT_PLATFORM[opt[:browser]]}_#{opt[:cloud]}"
+opt[:lab_env] ||= LabHelper.default_lab_env.to_sym
 opt[:test_name] ||= "#{opt[:lab_env]}_#{desc}_#{Time.now.to_i}"
 
 interactives_to_test = LabHelper.interactives

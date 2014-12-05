@@ -21,3 +21,5 @@ customList:
   # e.g.:
   # - interactives/samples/1-oil-and-water-shake.json
   # - interactives/samples/2-simple-gas.json
+
+labEnv: "dev"

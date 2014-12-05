@@ -56,4 +56,9 @@ module LabHelper
     end
     interactives
   end
+
+  def default_lab_env
+    config = File.file?(CUSTOM_CONFIG) ? YAML.load_file(CUSTOM_CONFIG) : YAML.load_file(DEFAULT_CONFIG)
+    config['labEnv']
+  end
 end
