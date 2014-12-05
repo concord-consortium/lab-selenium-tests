@@ -52,7 +52,7 @@ Specific options:
                                      by default platform is chosen automatically (each browser has related default platform).
                                      Note that enforcing platform can cause an error, as not every browser and platform
                                      combination is supported by SauceLabs and BrowserStack.
-    -l, --lab LAB_ENVIRONMENT        Lab environment (production, staging or dev), default dev.
+    -l, --lab LAB_ENVIRONMENT        Lab environment (production, staging or dev), default dev (via interactives-to-test default).
     -c, --cloud CLOUD                Test / cloud environment (SauceLabs, BrowserStack or local), default SauceLabs.
     -n, --name NAME                  Test name, by default created automatically.
     -a, --attempts MAX_ATTEMPTS      Maximum number of attempts to accomplish the test in case of errors, default 25.
@@ -125,4 +125,10 @@ ssh deploy@lab4.dev.concord.org
 cd /var/www/lab-selenium-tests
 ```
 
+The tests currently run under whatever environment is set in the not-checked-in interactives-to-test.yaml file.
+
 Test results: http://lab4.dev.concord.org/selenium/
+
+To check the existing chron jobs: `crontab -u deploy -l`
+
+To edit them: `crontab -e`
