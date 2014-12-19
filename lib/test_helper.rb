@@ -51,22 +51,41 @@ class TestHelper
   def self.remove_tests(count)
     tests_to_remove = nil
     open_and_lock_file "#{@@tests_metadata}" do |f|
-      content = f.read
-      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      array = get_test_array(f)
       tests_to_remove = array[0...count]
       array = array.drop(count)
-      f.rewind
-      f.puts('var TESTS_METADATA =')
-      f.puts(JSON.pretty_generate(array))
-      f.puts(';')
-      f.flush
-      f.truncate(f.pos)
+      write_test_array(f, array)
     end
     tests_to_remove.each do |test|
       path = "#{@@main_dir}/#{test['testName']}"
       puts "Removing #{path}..."
       `rm -rf #{path}`
     end
+  end
+
+  def self.limit_test_count(max_count)
+    test_count = 0
+    open_and_lock_file "#{@@tests_metadata}" do |f|
+      array = get_test_array(f)
+      test_count = array.length
+    end
+    if test_count > max_count
+      remove_tests(test_count - max_count)
+    end
+  end
+
+  def self.get_test_array(file)
+    content = file.read
+    content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+  end
+
+  def self.write_test_array(file, array)
+    file.rewind
+    file.puts('var TESTS_METADATA =')
+    file.puts(JSON.pretty_generate(array))
+    file.puts(';')
+    file.flush
+    file.truncate(file.pos)
   end
 
   def self.open_and_lock_file(file)
@@ -92,8 +111,7 @@ class TestHelper
     }
 
     TestHelper.open_and_lock_file "#{@@tests_metadata}" do |f|
-      content = f.read
-      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      array = TestHelper.get_test_array(f)
       # Find old metadata, replace with new one and save file.
       index = array.index { |m| m['testName'] == @test_name }
       if index
@@ -101,26 +119,15 @@ class TestHelper
       else
         array << new_test_metadata
       end
-      f.rewind
-      f.puts('var TESTS_METADATA =')
-      f.puts(JSON.pretty_generate(array))
-      f.puts(';')
-      f.flush
-      f.truncate(f.pos)
+      TestHelper.write_test_array(f, array)
     end
   end
 
   def add_js_image_metadata(new_image)
     TestHelper.open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
-      content = f.read
-      array = content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
+      array = TestHelper.get_test_array(f)
       array.push(new_image)
-      f.rewind
-      f.puts('var IMAGES_METADATA =')
-      f.puts(JSON.pretty_generate(array))
-      f.puts(';')
-      f.flush
-      f.truncate(f.pos)
+      TestHelper.write_test_array(f, array)
     end
   end
 
