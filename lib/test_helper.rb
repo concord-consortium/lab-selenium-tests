@@ -5,6 +5,8 @@ class TestHelper
   @@main_dir = 'screenshots'
   @@tests_metadata = "#{@@main_dir}/metadata.js"
   @@expected_screenshots_dir = "#{@@main_dir}/expected_screenshots"
+  TESTS_METADATA_NAME = 'TESTS_METADATA'
+  IMAGES_METADATA_NAME = 'IMAGES_METADATA'
 
   def initialize(test_name, interactives_count)
     @test_name = "test_#{test_name || Time.now.to_i}"
@@ -51,10 +53,10 @@ class TestHelper
   def self.remove_tests(count)
     tests_to_remove = nil
     open_and_lock_file "#{@@tests_metadata}" do |f|
-      array = get_test_array(f)
+      array = parse_array(f)
       tests_to_remove = array[0...count]
       array = array.drop(count)
-      write_test_array(f, array)
+      write_array(f, array, TESTS_METADATA_NAME)
     end
     tests_to_remove.each do |test|
       path = "#{@@main_dir}/#{test['testName']}"
@@ -66,7 +68,7 @@ class TestHelper
   def self.limit_test_count(max_count)
     test_count = 0
     open_and_lock_file "#{@@tests_metadata}" do |f|
-      array = get_test_array(f)
+      array = parse_array(f)
       test_count = array.length
     end
     if test_count > max_count
@@ -74,14 +76,14 @@ class TestHelper
     end
   end
 
-  def self.get_test_array(file)
+  def self.parse_array(file)
     content = file.read
     content && content.lines[1..-2] ? JSON.parse(content.lines[1..-2].join) : []
   end
 
-  def self.write_test_array(file, array)
+  def self.write_array(file, array, array_name)
     file.rewind
-    file.puts('var TESTS_METADATA =')
+    file.puts("var #{array_name} =")
     file.puts(JSON.pretty_generate(array))
     file.puts(';')
     file.flush
@@ -111,7 +113,7 @@ class TestHelper
     }
 
     TestHelper.open_and_lock_file "#{@@tests_metadata}" do |f|
-      array = TestHelper.get_test_array(f)
+      array = TestHelper.parse_array(f)
       # Find old metadata, replace with new one and save file.
       index = array.index { |m| m['testName'] == @test_name }
       if index
@@ -119,15 +121,15 @@ class TestHelper
       else
         array << new_test_metadata
       end
-      TestHelper.write_test_array(f, array)
+      TestHelper.write_array(f, array, TESTS_METADATA_NAME)
     end
   end
 
   def add_js_image_metadata(new_image)
     TestHelper.open_and_lock_file "#{@test_dir}/images_metadata.js" do |f|
-      array = TestHelper.get_test_array(f)
+      array = TestHelper.parse_array(f)
       array.push(new_image)
-      TestHelper.write_test_array(f, array)
+      TestHelper.write_array(f, array, IMAGES_METADATA_NAME)
     end
   end
 
