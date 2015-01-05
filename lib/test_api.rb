@@ -23,7 +23,7 @@ class TestAPI
   # It's wrapper around .switch_to.alert that can wait for alert to show up.
   # Note that e.g. Safari doesn't support alert handling, so nil will be
   # always returned.
-  def switch_to_alert(timeout = 20)
+  def switch_to_alert(timeout = 40)
     sleep_time = 0.5
     start_time = Time.now
     alert = nil
