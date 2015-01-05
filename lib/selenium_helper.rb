@@ -91,8 +91,9 @@ module SeleniumHelper
         caps = Selenium::WebDriver::Remote::Capabilities.android
         caps.platform = 'Linux'
         caps.version = '4.3'
-        caps['device-type'] = 'tablet'
+        caps['deviceName'] = 'Android Emulator'
         caps['device-orientation'] = 'landscape'
+        caps['javascriptEnabled'] = true
       else
         fail 'Incorrect browser name.'
       end

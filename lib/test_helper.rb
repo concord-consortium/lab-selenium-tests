@@ -25,13 +25,14 @@ class TestHelper
     screenshot_path = "#{@test_dir}/#{filename}"
     driver.save_screenshot screenshot_path
 
-    if browser == :iPad
+    if browser == :iPad || browser == :Android
       img = Magick::Image.read(screenshot_path).first
-      # iPad screenshots are rotated...
+      # For some reason both iPad and Android sreenshots are rotated.
       img.rotate!(-90)
-      # They also contain top bar with clock, URL etc. We don't need it,
-      # it would only obfuscate the image comparison algorithm results.
-      img.crop!(0, 190, img.columns, img.rows - 190)
+      # Both iPad and Android screenshots contain top bar with clock, URL etc.
+      # that could obfuscate the image comparison algorithm results.
+      top_margin = browser == :iPad ? 190 : 100
+      img.crop!(0, top_margin, img.columns, img.rows - top_margin)
       img.write(screenshot_path)
     end
 
