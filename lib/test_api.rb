@@ -35,6 +35,16 @@ class TestAPI
     alert
   end
 
+  def close_about_dialog
+    css_selector = '.about-dialog .ui-dialog-titlebar-close'
+    case @browser
+      when :iPad
+        @driver.execute_script "$('#{css_selector}').click();"
+      else
+        $test.driver.find_element(:css, css_selector).click
+    end
+  end
+
   def click_element(css_selector)
     case @browser
     when :iPad
