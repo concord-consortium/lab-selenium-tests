@@ -1,9 +1,11 @@
 require 'selenium-webdriver'
 require 'capybara'
+require 'appium_lib'
+require 'appium_capybara'
 
 module SeleniumHelper
-  SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android]
-  SUPPORTED_PLATFORMS = [:OSX_10_8, :OSX_10_9, :Win_7, :Win_8, :Win_8_1, :Linux]
+  SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE9, :IE10, :IE11, :iPad, :Android, :Edge]
+  SUPPORTED_PLATFORMS = [:OSX_10_8, :OSX_10_9, :Win_7, :Win_8, :Win_8_1, :Linux, :Win_10]
   DEFAULT_PLATFORM = {
     Chrome: :Win_7,
     Safari: :OSX_10_9,
@@ -11,6 +13,7 @@ module SeleniumHelper
     IE9: :Win_7,
     IE10: :Win_7,
     IE11: :Win_8_1,
+    Edge: :Win_10,
     iPad: nil,
     Android: nil
   }
@@ -66,13 +69,13 @@ module SeleniumHelper
       case browser
       when SUPPORTED_BROWSERS[0]
         caps = Selenium::WebDriver::Remote::Capabilities.chrome
-        caps.version = '33'
+        caps.version = 'latest'
       when SUPPORTED_BROWSERS[1]
         caps = Selenium::WebDriver::Remote::Capabilities.safari
         caps.version = '7'
       when SUPPORTED_BROWSERS[2]
         caps = Selenium::WebDriver::Remote::Capabilities.firefox
-        caps.version = '28'
+        caps.version = 'latest'
       when SUPPORTED_BROWSERS[3]
         caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
         caps.version = '9'
@@ -83,17 +86,28 @@ module SeleniumHelper
         caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
         caps.version = '11'
       when SUPPORTED_BROWSERS[6]
-        caps = Selenium::WebDriver::Remote::Capabilities.ipad
-        caps.platform = 'OS X 10.9'
-        caps.version = '7.1'
-        caps['device-orientation'] = 'landscape'
+        caps = Selenium::WebDriver::Remote::Capabilities.safari
+        caps['appiumVersion'] = '1.6.3'
+        caps['deviceName'] = 'iPad Simulator'
+        caps['platformName'] = 'iOS'
+        caps['platformVersion'] = '9.3'
+        caps['deviceOrientation'] = 'landscape'
+        caps['browserName'] = 'Safari'
+        caps['rotatable'] = true
       when SUPPORTED_BROWSERS[7]
-        caps = Selenium::WebDriver::Remote::Capabilities.android
-        caps.platform = 'Linux'
-        caps.version = '4.3'
+        caps = Selenium::WebDriver::Remote::Capabilities.chrome
+        caps['appiumVersion'] = '1.5.3'
+        caps['platformName'] = 'Linux'
+        caps['platformVersion'] = '5.0'
+        caps['browserName'] ='Browser'
+        caps['browserVersion'] = 'latest'
         caps['deviceName'] = 'Android Emulator'
-        caps['device-orientation'] = 'landscape'
-        caps['javascriptEnabled'] = true
+        caps['deviceOrientation'] = 'landscape'
+        caps['rotatable'] = true
+      when SUPPORTED_BROWSERS[8]
+          caps = Selenium::WebDriver::Remote::Capabilities.edge
+          caps['version'] = '13.10586'
+          caps['platform'] = 'Windows 10'
       else
         fail 'Incorrect browser name.'
       end
@@ -152,6 +166,8 @@ module SeleniumHelper
         caps.platform = 'Windows 8.1'
       when SUPPORTED_PLATFORMS[5]
         caps.platform = 'Linux'
+        when SUPPORTED_PLATFORMS[6]
+          caps.platform = 'Windows 10'
       else
         fail 'Incorrect platform (OS) name.'
       end
@@ -183,3 +199,5 @@ module SeleniumHelper
     caps
   end
 end
+
+
