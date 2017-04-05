@@ -41,6 +41,8 @@ class TestAPI
       when :iPad
         @driver.execute_script "$('#{css_selector}').click();"
       else
+        # found = @wait.until {driver.find_element(:css, css_selector)}
+        # puts "found #{found}"
         $test.driver.find_element(:css, css_selector).click
     end
   end
