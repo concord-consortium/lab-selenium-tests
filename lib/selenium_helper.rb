@@ -94,15 +94,15 @@ module SeleniumHelper
         caps['deviceOrientation'] = 'landscape'
         caps['browserName'] = 'Safari'
         caps['rotatable'] = true
-      when SUPPORTED_BROWSERS[7]
-        caps = Selenium::WebDriver::Remote::Capabilities.chrome
-        caps['appiumVersion'] = '1.5.3'
-        caps['platformName'] = 'Linux'
-        caps['platformVersion'] = '5.0'
-        caps['browserName'] ='Browser'
-        caps['browserVersion'] = 'latest'
+      when SUPPORTED_BROWSERS[7] #Need an Android Emulator that runs Chrome instead of generic Browser
+        caps = Selenium::WebDriver::Remote::Capabilities.new
+        caps['appiumVersion'] = '1.6.3'
+        caps['platformName'] = 'Android'
+        caps['platformVersion'] = '6.0'
+        caps['browserName'] ='Chrome'
         caps['deviceName'] = 'Android Emulator'
         caps['deviceOrientation'] = 'landscape'
+        caps['nativeWebScreenshot'] = true
         caps['rotatable'] = true
       when SUPPORTED_BROWSERS[8]
           caps = Selenium::WebDriver::Remote::Capabilities.edge
