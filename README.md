@@ -13,7 +13,12 @@ Installation
 
     Mac with [homebrew](http://brew.sh/) available:
     ```
-    brew install imagemagick
+    brew install imagemagick@6
+    ```
+    
+    If `rmagic` gem can't be installed, you might also need to run:
+    ```
+    brew link --force imagemagick@6
     ```
 
     Ubuntu:

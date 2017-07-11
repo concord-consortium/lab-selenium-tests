@@ -6,3 +6,5 @@ screenshots/test_*
 screenshots/metadata.js
 
 interactives-to-test.yaml
+
+.idea
