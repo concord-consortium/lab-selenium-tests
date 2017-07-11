@@ -1,12 +1,13 @@
 class TestAPI
   attr_reader :driver, :capybara, :browser
 
-  def initialize(driver, capybara, test_helper, interactive_path, interactive_url, browser, cloud)
+  def initialize(driver, capybara, test_helper, interactive_path, interactive_url, browser, cloud, language)
     @driver = driver
     @capybara = capybara
     @test_helper = test_helper
     @int_url = interactive_url
     @browser = browser
+    @language = language.to_s
 
     @screenshots_count = 0
     @screenshot_name = "#{interactive_path.gsub(/[\/\s]/, '_')}_[#{@browser}_#{cloud}]"
@@ -43,6 +44,30 @@ class TestAPI
       else
         $test.driver.find_element(:css, css_selector).click
     end
+  end
+
+  def select_language
+    css_selector = '#lang-icon'
+    css_selector_language = ".context-menu-item.lang-#{@language}"
+    puts "Language is #{@language}. selector is #{css_selector_language}"
+
+    if !(@language=='en-US')
+      case @browser
+        when :iPad
+          @driver.execute_script "$('#{css_selector}').click();"
+          @driver.execute_script "$('#{css_selector_language}').click();"
+        else
+          $test.driver.find_element(:css, css_selector).click
+          sleep(1.5)
+          if (driver.find_elements(:css, css_selector_language).size > 0)
+            $test.driver.find_element(:css, css_selector_language).click
+          else
+            puts 'Language NOT FOUND'
+          end
+          sleep(5)
+      end
+    end
+
   end
 
   def click_element(css_selector)

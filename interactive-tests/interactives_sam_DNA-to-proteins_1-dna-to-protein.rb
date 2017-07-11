@@ -1,4 +1,8 @@
 # Initial cells view.
+if ($test.driver.find_element(:id=>'lang-icon'))
+  $test.select_language
+end
+sleep 2
 $test.save_screenshot
 
 $test.click_button('next-state-jump')

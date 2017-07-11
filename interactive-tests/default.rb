@@ -8,8 +8,13 @@ begin
   $test.driver.find_element(:id => 'iframe-model')
   puts 'iframe model detected, extra sleep time added...'
   sleep 15
+
 rescue Selenium::WebDriver::Error::NoSuchElementError
   # It's present only in JSmol interactives.
+end
+sleep(2)
+if ($test.driver.find_element(:id=>'lang-icon'))
+  $test.select_language
 end
 sleep 1.5
 $test.save_screenshot

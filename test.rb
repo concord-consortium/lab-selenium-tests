@@ -6,15 +6,27 @@ require './lib/lab_helper'
 require './lib/selenium_helper'
 
 # Options and default values:
+# opt = {
+#   browser: :Chrome,
+#   # By default platform is based on the browser (but user can enforce specific platform).
+#   platform: nil,
+#   lab_env: nil,
+#   cloud: :SauceLabs,
+#   # Number of attempts to finish the test in case of errors.
+#   max_attempts: 25,
+#   test_name: nil,
+#   language: 'en-US'
+# }
 opt = {
-  browser: :Chrome,
-  # By default platform is based on the browser (but user can enforce specific platform).
-  platform: nil,
-  lab_env: nil,
-  cloud: :SauceLabs,
-  # Number of attempts to finish the test in case of errors.
-  max_attempts: 25,
-  test_name: nil
+    browser: :Chrome,
+    # By default platform is based on the browser (but user can enforce specific platform).
+    platform: nil,
+    lab_env: nil,
+    cloud: :local,
+    # Number of attempts to finish the test in case of errors.
+    max_attempts: 25,
+    test_name: nil,
+    language: 'en-US'
 }
 
 opt_parser = OptionParser.new do |o|
@@ -53,6 +65,10 @@ opt_parser = OptionParser.new do |o|
        'Maximum number of attempts to accomplish the test in case of errors, default 25.') do |a|
     opt[:max_attempts] = a
   end
+  o.on('--lang', '--language LANGUAGE',
+        'Specify language to select for the interactives. en-US is default. Other options are pl, es, nb-NO, nn-NO, pt-BR, ru, it, el') do |lang|
+    opt[:language] = lang
+  end
 end
 
 opt_parser.parse!(ARGV)
@@ -88,7 +104,7 @@ begin
 
       # Execute interactive test (note that interactive is already loaded and rendered!).
       # All interactive tests can use TestAPI instance exposed in $test global variable.
-      $test = TestAPI.new(driver, capybara, test_helper, int_path, int_url, opt[:browser], opt[:cloud])
+      $test = TestAPI.new(driver, capybara, test_helper, int_path, int_url, opt[:browser], opt[:cloud], opt[:language])
       # Test script name should correspond to interactive path:
       # 1. All '/' should be replaced by '_'.
       # 2. File extension should be '.rb' instead of '.json'.
