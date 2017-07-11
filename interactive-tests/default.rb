@@ -3,18 +3,26 @@
 $test.driver.execute_script 'Embeddable.controller.on("modelLoaded.selenium-test", function() { script.stop(); });' \
                             'script.start();' \
                             'setTimeout(function() { script.reloadModel(); }, 500);'
+
+  if ($test.driver.find_elements(:id=>'lang-icon').size > 0)
+    puts 'flag is present'
+    $test.driver.find_element(:id=>'lang-icon').click
+    $test.select_language
+  end
+
+sleep(2)
+
 begin
   # Extra time for iframe model type.
   $test.driver.find_element(:id => 'iframe-model')
   puts 'iframe model detected, extra sleep time added...'
   sleep 15
-
 rescue Selenium::WebDriver::Error::NoSuchElementError
   # It's present only in JSmol interactives.
 end
-sleep(2)
-if ($test.driver.find_element(:id=>'lang-icon'))
-  $test.select_language
-end
+
+# if ($test.driver.find_element(:id=>'lang-icon'))
+#   $test.select_language
+# end
 sleep 1.5
 $test.save_screenshot
