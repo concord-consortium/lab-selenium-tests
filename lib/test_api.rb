@@ -51,23 +51,29 @@ class TestAPI
     css_selector_language = ".context-menu-item.lang-#{@language}"
 
     if !(@language=='en-US')
-      if ($test.driver.find_elements(:id=>'lang-icon').size > 0)
+      lang_icon_size = $test.driver.find_elements(:id=>'lang-icon').size
+      puts "lang_icon size is #{lang_icon_size}"
+      if (lang_icon_size > 0)
         puts 'flag is present'
-        $test.driver.find_element(:id=>'lang-icon').click
-      end
-      case @browser
-        when :iPad
-          @driver.execute_script "$('#{css_selector}').click();"
-          @driver.execute_script "$('#{css_selector_language}').click();"
-        else
-          $test.driver.find_element(:css, css_selector).click
-          sleep(1.5)
-          if (driver.find_elements(:css, css_selector_language).size > 0)
-            $test.driver.find_element(:css, css_selector_language).click
+        case @browser
+          when :iPad
+            @driver.execute_script "$('#{css_selector}').click();"
+            @driver.execute_script "$('#{css_selector_language}').click();"
           else
-            puts 'Language NOT FOUND'
-          end
-          sleep(5)
+            $test.driver.find_element(:css, css_selector).click
+            sleep(2.5)
+            language_flag_size = driver.find_elements(:css, css_selector_language).size
+            puts "language flag size is #{language_flag_size}"
+            if (language_flag_size > 0)
+              $test.driver.find_element(:css, css_selector_language).click
+              sleep(3)
+            else
+              puts 'Language NOT FOUND'
+            end
+            sleep(5)
+        end
+      else
+        puts "No language flag"
       end
     end
 

@@ -65,7 +65,7 @@ opt_parser = OptionParser.new do |o|
        'Maximum number of attempts to accomplish the test in case of errors, default 25.') do |a|
     opt[:max_attempts] = a
   end
-  o.on('--lang', '--language LANGUAGE',
+  o.on('-lang', '--language LANGUAGE',
         'Specify language to select for the interactives. en-US is default. Other options are pl, es, nb-NO, nn-NO, pt-BR, ru, it, el') do |lang|
     opt[:language] = lang
   end
