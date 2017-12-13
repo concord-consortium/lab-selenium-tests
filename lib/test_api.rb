@@ -49,9 +49,12 @@ class TestAPI
   def select_language
     css_selector = '#lang-icon'
     css_selector_language = ".context-menu-item.lang-#{@language}"
-    puts "Language is #{@language}. selector is #{css_selector_language}"
 
     if !(@language=='en-US')
+      if ($test.driver.find_elements(:id=>'lang-icon').size > 0)
+        puts 'flag is present'
+        $test.driver.find_element(:id=>'lang-icon').click
+      end
       case @browser
         when :iPad
           @driver.execute_script "$('#{css_selector}').click();"
