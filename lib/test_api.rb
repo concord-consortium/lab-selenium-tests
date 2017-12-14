@@ -52,7 +52,6 @@ class TestAPI
 
     if !(@language=='en-US')
       lang_icon_size = $test.driver.find_elements(:id=>'lang-icon').size
-      puts "lang_icon size is #{lang_icon_size}"
       if (lang_icon_size > 0)
         puts 'flag is present'
         case @browser
@@ -61,22 +60,24 @@ class TestAPI
             @driver.execute_script "$('#{css_selector_language}').click();"
           else
             $test.driver.find_element(:css, css_selector).click
-            sleep(2.5)
+            sleep(1.5)
             language_flag_size = driver.find_elements(:css, css_selector_language).size
             puts "language flag size is #{language_flag_size}"
             if (language_flag_size > 0)
               $test.driver.find_element(:css, css_selector_language).click
-              sleep(3)
+              sleep(1)
             else
               puts 'Language NOT FOUND'
             end
-            sleep(5)
         end
+        return true
       else
         puts "No language flag"
+        return false
       end
+    else
+      return true
     end
-
   end
 
   def click_element(css_selector)
