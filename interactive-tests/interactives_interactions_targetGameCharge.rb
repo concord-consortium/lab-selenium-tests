@@ -1,7 +1,7 @@
 # Run basic test first.
 load 'interactive-tests/default.rb', true
 
-$test.close_about_dialog
+# $test.close_about_dialog
 
 $test.driver.execute_script('script.set("object-a-charge", -2);')
 $test.driver.execute_script('script.set("object-b-charge", 1);')
