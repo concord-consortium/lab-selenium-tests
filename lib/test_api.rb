@@ -45,6 +45,11 @@ class TestAPI
     end
   end
 
+  def check_about_dialog_is_present
+    close_dialog_size = $test.driver.find_elements(:css=>'.about-dialog .ui-dialog-titlebar-close').size #checks to see if there is an about dialog
+    close_dialog_size > 0 && ($test.driver.find_element(:css=>'.about-dialog').attribute("style").include?('block'))? true: false
+  end
+
   def click_element(css_selector)
     case @browser
     when :iPad
@@ -69,7 +74,7 @@ class TestAPI
 
   def open_pulldown(id)
     case @browser
-    when :iPad
+    when :iPad, :Android
       @driver.execute_script "$('##{id} select').data('selectBox-selectBoxIt').open();"
     else
       $test.driver.find_element(:css, "##{id} .selectboxit").click
@@ -79,7 +84,9 @@ class TestAPI
   def select_pulldown_option(id, option_idx)
     case @browser
     when :iPad, :Android
-      @driver.execute_script "$('##{id} select').data('selectBox-selectBoxIt').close().selectOption(#{option_idx});"
+      $test.driver.find_element(:css, "##{id}")
+      pulldown_list = $test.driver.find_elements(:css, "##{id} select option")
+      pulldown_list[option_idx].click
     else
       $test.driver.find_element(:css, "##{id} .selectboxit-options li:nth-child(#{option_idx + 1}) a").click
     end
