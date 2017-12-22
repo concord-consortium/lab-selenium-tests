@@ -15,9 +15,7 @@ end
 sleep 1.5
 $test.save_screenshot
 
-# close_dialog_size = $test.driver.find_elements(:css=>'.about-dialog .ui-dialog-titlebar-close').size #checks to see if there is an about dialog
-# if close_dialog_size > 0 && ($test.driver.find_element(:css=>'.about-dialog').attribute("style").include?('block')) #some interactives have hidden about dialogs so have to check if they are visible
-if $test.check_about_dialog_is_present
+if $test.check_about_dialog_is_present  #some interactives have hidden about dialogs so have to check if they are visible
   $test.close_about_dialog
   sleep 1.5
   $test.save_screenshot
