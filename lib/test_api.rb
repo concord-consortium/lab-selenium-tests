@@ -45,6 +45,11 @@ class TestAPI
     end
   end
 
+  def check_about_dialog_is_present
+    close_dialog_size = $test.driver.find_elements(:css=>'.about-dialog .ui-dialog-titlebar-close').size #checks to see if there is an about dialog
+    close_dialog_size > 0 && ($test.driver.find_element(:css=>'.about-dialog').attribute("style").include?('block'))? true: false
+  end
+
   def click_element(css_selector)
     case @browser
     when :iPad
