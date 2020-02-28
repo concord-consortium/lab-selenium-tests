@@ -51,7 +51,7 @@ Usage
 Usage: test.rb [options]
 
 Specific options:
-    -b, --browser BROWSER            Browser that should be tested (Chrome, Safari, Firefox, IE9, IE10, IE11, iPad, Android),
+    -b, --browser BROWSER            Browser that should be tested (Chrome, Safari, Firefox, Edge, IE11, iPad, Android),
                                      default Chrome.
     -p, --platform PLATFORM          Platform (OS) that should be tested (OSX_10_8, OSX_10_9, Win_7, Win_8, Win_8_1, Linux),
                                      by default platform is chosen automatically (each browser has related default platform).

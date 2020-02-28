@@ -100,7 +100,7 @@
   </div>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="http://huddle.github.io/Resemble.js/resemble.js" charset="utf-8"></script>
+  <script src="http://huddleeng.github.io/Resemble.js/resemble.js" charset="utf-8"></script>
   <script src="images_metadata.js"></script>
   <script>
     $(function () {
@@ -114,6 +114,7 @@
       var $diff;
       var $actualImg;
       var $expectedImg;
+      var resembleControl;
       for (var i = 0; i < imgCount; i++) {
         img = IMAGES_METADATA[i];
         imgDiff = img.diff != null ? img.diff.toFixed(2) : 100;
