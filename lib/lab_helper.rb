@@ -35,15 +35,17 @@ module LabHelper
     # Download interactives.json and return array of interactives paths that
     # have allowed categories and publication statuses.
     interactives = []
-    interactives_json_url = "#{LAB_URL}interactives.json"
-    uri = URI.parse(interactives_json_url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Get.new(uri.request_uri)
+    # interactives_json_url = "#{LAB_URL}interactives.json"
+    # uri = URI.parse(interactives_json_url)
+    # http = Net::HTTP.new(uri.host, uri.port)
+    # request = Net::HTTP::Get.new(uri.request_uri)
 
-    response = http.request(request)
-    fail "#{interactives_json_url} cannot be found!" if response.code != '200'
+    # response = http.request(request)
+    # fail "#{interactives_json_url} cannot be found!" if response.code != '200'
+    response = File.read("#{Dir.home}/development/lab-selenium-tests/lib/interactives.json")
 
-    result = JSON.parse(response.body)
+    # result = JSON.parse(response.body)
+    result = JSON.parse(response)
     # Test only 'public' interactives that belong to 'Curriculum' group.
     group_key_allowed = {}
     result['groups'].each do |g|

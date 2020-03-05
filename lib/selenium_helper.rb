@@ -17,8 +17,9 @@ module SeleniumHelper
     Android: nil
   }
   CLOUD_URL = {
-    SauceLabs: 'https://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:443/wd/hub',
+    # SauceLabs: 'https://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:443/wd/hub',
     # BrowserStack: 'http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub',
+    SauceLabs: 'https://eireland:b64ffb1e-a71d-40db-a73c-67a8b43620b6@ondemand.saucelabs.com:443/wd/hub',
     local: nil
   }
 
