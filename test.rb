@@ -72,7 +72,7 @@ begin
   SeleniumHelper.execute_on(opt[:browser], opt[:platform], opt[:cloud],
                             'Lab interactives screenshots generation') do |driver, capybara|
     # Implicit wait e.g. while calling find_element method.
-    driver.manage.timeouts.implicit_wait = 0 # seconds
+    # driver.manage.timeouts.implicit_wait = 0 # seconds
     while interactives_to_test.length > 0
       int_path = interactives_to_test[0]
       puts int_path
