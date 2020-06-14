@@ -27,15 +27,16 @@ class TestHelper
 
     if browser == :iPad || browser == :Android
       img = Magick::Image.read(screenshot_path).first
-      # For some reason both iPad and Android sreenshots are rotated. -- 3/31/2017 Only Android screenshots are rotated
-      if browser == :Android
-        img.rotate!(90)
-      end
+      # For some reason both iPad and Android sreenshots are rotated. -- 3/13/2020 Neither iPad nor Android are rotated
+      # if browser == :Android
+      #   img.rotate!(90)
+      # end
       # Both iPad and Android screenshots contain top bar with clock, URL etc.
       # that could obfuscate the image comparison algorithm results.
       top_margin = browser == :iPad ? 140 : 160
-      side_margin = browser == :Android ? 85 : 0
-      img.crop!(0, top_margin, img.columns-side_margin, img.rows - top_margin)
+      side_margin = browser == :Android ? 0 : 0
+      left_margin = browser == :Android ? 100 : 0
+      img.crop!(left_margin, top_margin, img.columns-side_margin, img.rows - top_margin)
       img.write(screenshot_path)
     end
 

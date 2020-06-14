@@ -1,9 +1,10 @@
 # Test if model can be run at least for 0.5s without errors. Then it's reloaded and stopped (as some models
 # are automatically started in "onLoad" scripts, what would cause that screenshots would be always different).
-
+puts "in default.rb"
 $test.driver.execute_script 'Embeddable.controller.on("modelLoaded.selenium-test", function() { script.stop(); });' \
                             'script.start();' \
                             'setTimeout(function() { script.reloadModel(); }, 500);'
+puts "after javascript"                          
 begin
   # Extra time for iframe model type.
   $test.driver.find_element(:id => 'iframe-model')

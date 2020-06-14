@@ -5,20 +5,20 @@ require 'appium_capybara'
 
 module SeleniumHelper
   SUPPORTED_BROWSERS = [:Chrome, :Safari, :Firefox, :IE11, :iPad, :Android, :Edge]
-  SUPPORTED_PLATFORMS = [:OSX_10_13, :OSX_10_14, :Win_7, :Win_8, :Win_8_1, :Linux, :Win_10]
+  SUPPORTED_PLATFORMS = [:OS_X_10_13, :OSX_10_14, :Win_7, :Win_8, :Win_8_1, :Linux, :Win_10]
   DEFAULT_PLATFORM = {
     Chrome: :Win_7,
-    Safari: :OSX_10_13,
+    Safari: :OS_X_10_13,
     Firefox: :Win_7,
-    IE10: :Win_7,
     IE11: :Win_8_1,
     Edge: :Win_10,
     iPad: nil,
     Android: nil
   }
   CLOUD_URL = {
-    SauceLabs: 'https://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:443/wd/hub',
+    # SauceLabs: 'https://LabTests:559172dc-20ba-4b75-8918-c0e512ee843a@ondemand.saucelabs.com:443/wd/hub',
     # BrowserStack: 'http://concordconsortiu:cUEoaznXrKVPvQUb4kMy@hub.browserstack.com/wd/hub',
+    SauceLabs: 'https://eireland:b64ffb1e-a71d-40db-a73c-67a8b43620b6@ondemand.saucelabs.com:443/wd/hub',
     local: nil
   }
 
@@ -39,6 +39,7 @@ module SeleniumHelper
         # Each browser has its default platform, however client code can enforce specific one.
         platform ||= DEFAULT_PLATFORM[browser]
         caps = get_capabilities(browser, cloud)
+        puts "caps are #{caps}"
         set_platform(caps, platform, cloud) if platform
         caps['name'] = name
         caps['max-duration'] = 10_800
@@ -77,7 +78,7 @@ module SeleniumHelper
         caps.version = 'latest'
       when SUPPORTED_BROWSERS[3]
         caps = Selenium::WebDriver::Remote::Capabilities.internet_explorer
-        caps.version = '11'
+        caps.version = 'latest'
       when SUPPORTED_BROWSERS[4]
         caps = Selenium::WebDriver::Remote::Capabilities.safari
         caps['appiumVersion'] = '1.9.1'
@@ -89,12 +90,13 @@ module SeleniumHelper
         caps['rotatable'] = true
       when SUPPORTED_BROWSERS[5] #Need an Android Emulator that runs Chrome instead of generic Browser
         caps = Selenium::WebDriver::Remote::Capabilities.new
-        caps['appiumVersion'] = '1.9.1'
+        caps['appiumVersion'] = '1.16.0'
         caps['platformName'] = 'Android'
-        caps['platformVersion'] = '7.0'
+        caps['platformVersion'] = '8.0'
         caps['browserName'] ='Chrome'
         caps['deviceName'] = 'Android Emulator'
         caps['deviceOrientation'] = 'landscape'
+        caps['javascriptEnabled'] = true
         caps['nativeWebScreenshot'] = true
         caps['rotatable'] = true
       when SUPPORTED_BROWSERS[6]
@@ -112,18 +114,12 @@ module SeleniumHelper
         caps['browser_version'] = '33.0'
       when SUPPORTED_BROWSERS[1]
         caps['browser'] = 'Safari'
-        caps['browser_version'] = '7.0'
+        caps['browser_version'] = '13.0'
       when SUPPORTED_BROWSERS[2]
         caps['browser'] = 'Firefox'
         caps['browser_version'] = '27.0'
       when SUPPORTED_BROWSERS[3]
-        caps['browser'] = 'IE'
-        caps['browser_version'] = '9.0'
-      when SUPPORTED_BROWSERS[4]
-        caps['browser'] = 'IE'
-        caps['browser_version'] = '10.0'
-      when SUPPORTED_BROWSERS[5]
-        caps['browser'] = 'IE'
+        caps['browser'] = 'Internet Explorer'
         caps['browser_version'] = '11.0'
       when SUPPORTED_BROWSERS[6]
         caps['browserName'] = 'iPad'
@@ -148,9 +144,9 @@ module SeleniumHelper
     if cloud == :SauceLabs
       case platform
       when SUPPORTED_PLATFORMS[0]
-        caps.platform = 'OS X 10.8'
+        caps.platform = 'macOS 10.13'
       when SUPPORTED_PLATFORMS[1]
-        caps.platform = 'OS X 10.9'
+        caps.platform = 'macOS 10.14'
       when SUPPORTED_PLATFORMS[2]
         caps.platform = 'Windows 7'
       when SUPPORTED_PLATFORMS[3]
@@ -190,6 +186,7 @@ module SeleniumHelper
       fail 'Incorrect cloud name (SauceLabs or BrowserStack expected).'
     end
     caps
+    puts "platform is #{platform}"
   end
 end
 
